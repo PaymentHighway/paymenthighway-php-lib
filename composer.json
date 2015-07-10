@@ -1,0 +1,23 @@
+{
+  "name": "solinor/paymenthighwayio",
+  "description": "Paymenthighway SDK",
+  "type": "library",
+  "authors" : [
+    {
+      "name" : "Jonni Larjomaa",
+      "email" : "jonni.larjomaa@solinor.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "require-dev" : {
+    "phpunit/phpunit" : "4.7.*"
+  },
+  "autoload" : {
+    "psr-4": {
+      "Solinor\\PaymentHighwayIo\\": "src/"
+    }
+  },
+  "minimum-stability" : "stable"
+}

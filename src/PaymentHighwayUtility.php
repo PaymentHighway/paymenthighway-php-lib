@@ -1,5 +1,6 @@
 <?php namespace Solinor\PaymentHighway;
 
+use Rhumsaa\Uuid\Uuid;
 
 
 class PaymentHighwayUtility {
@@ -14,30 +15,21 @@ class PaymentHighwayUtility {
 
     /**
      * Generate a pseudo random v4 UUID
-     *
      * @return string|UUID
      */
     public static function createRequestId()
     {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        return Uuid::uuid4()->toString();
+    }
 
-            // 32 bits for "time_low"
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+    public static function parseSphParameters($nameValuePairs)
+    {
 
-            // 16 bits for "time_mid"
-            mt_rand(0, 0xffff),
+        foreach($nameValuePairs as $key => $value)
+        {
+            strpos($key, 'sph') === 0 ? $filtered[$key] = $value : null;
+        }
 
-            // 16 bits for "time_hi_and_version",
-            // four most significant bits holds version number 4
-            mt_rand(0, 0x0fff) | 0x4000,
-
-            // 16 bits, 8 bits for "clk_seq_hi_res",
-            // 8 bits for "clk_seq_low",
-            // two most significant bits holds zero and one for variant DCE1.1
-            mt_rand(0, 0x3fff) | 0x8000,
-
-            // 48 bits for "node"
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-        );
+        return $filtered;
     }
 }

@@ -1,22 +1,24 @@
 <?php namespace Solinor\PaymentHighway;
 
 
+use Solinor\PaymentHighway\Model\SecureSigner;
+
 class FormBuilder {
 
-    const METHOD_POST = "POST";
-    const SPH_ACCOUNT = "sph-account";
-    const SPH_MERCHANT = "sph-merchant";
-    const SPH_AMOUNT = "sph-amount";
-    const SPH_CURRENCY = "sph-currency";
-    const SPH_ORDER = "sph-order";
-    const SPH_SUCCESS_URL = "sph-success-url";
-    const SPH_FAILURE_URL = "sph-failure-url";
-    const SPH_CANCEL_URL = "sph-cancel-url";
-    const SPH_REQUEST_ID = "sph-request-id";
-    const SPH_TIMESTAMP = "sph-timestamp";
-    const LANGUAGE = "language";
-    const DESCRIPTION = "description";
-    const SIGNATURE = "signature";
+    static $METHOD_POST = "POST";
+    static $SPH_ACCOUNT = "sph-account";
+    static $SPH_MERCHANT = "sph-merchant";
+    static $SPH_AMOUNT = "sph-amount";
+    static $SPH_CURRENCY = "sph-currency";
+    static $SPH_ORDER = "sph-order";
+    static $SPH_SUCCESS_URL = "sph-success-url";
+    static $SPH_FAILURE_URL = "sph-failure-url";
+    static $SPH_CANCEL_URL = "sph-cancel-url";
+    static $SPH_REQUEST_ID = "sph-request-id";
+    static $SPH_TIMESTAMP = "sph-timestamp";
+    static $LANGUAGE = "language";
+    static $DESCRIPTION = "description";
+    static $SIGNATURE = "signature";
 
     private $method = self::METHOD_POST;
     private $baseUrl = null;
@@ -75,16 +77,16 @@ class FormBuilder {
     /**
      * @return array
      */
-    private function createFormParameterArray(){
-
+    private function createFormParameterArray()
+    {
         $parameterArray = array(
-            self::SPH_SUCCESS_URL => $this->successUrl,
-            self::SPH_FAILURE_URL => $this->failureUrl,
-            self::SPH_CANCEL_URL => $this->cancelUrl,
-            self::SPH_ACCOUNT => $this->account,
-            self::SPH_MERCHANT => $this->merchant,
-            self::SPH_TIMESTAMP => PaymentHighwayUtility::getDate(),
-            self::SPH_REQUEST_ID => PaymentHighwayUtility::createRequestId(),
+            self::$SPH_SUCCESS_URL => $this->successUrl,
+            self::$SPH_FAILURE_URL => $this->failureUrl,
+            self::$SPH_CANCEL_URL => $this->cancelUrl,
+            self::$SPH_ACCOUNT => $this->account,
+            self::$SPH_MERCHANT => $this->merchant,
+            self::$SPH_TIMESTAMP => PaymentHighwayUtility::getDate(),
+            self::$SPH_REQUEST_ID => PaymentHighwayUtility::createRequestId(),
         );
 
         ksort($parameterArray, SORT_DESC);
@@ -94,7 +96,14 @@ class FormBuilder {
 
     /**
      * @TODO: not implemented yet!
+     * @param string $uri
+     * @param array  $sphNameValuePairs
      */
-    private function createSecureSign(){}
+    private function createSecureSign($uri, $sphNameValuePairs = array())
+    {
+        $parsedSphParameters = PaymentHighwayUtility::parseSphParameters($sphNameValuePairs);
+        $secureSigner = new SecureSigner($this->signatureKeyId, $this->signatureSecret);
+
+    }
 
 }

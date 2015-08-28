@@ -1,6 +1,7 @@
 <?php namespace Solinor\PaymentHighway;
 
 
+use Solinor\PaymentHighway\Model\Form;
 use Solinor\PaymentHighway\Model\SecureSigner;
 
 class FormBuilder {
@@ -20,7 +21,12 @@ class FormBuilder {
     static $DESCRIPTION = "description";
     static $SIGNATURE = "signature";
 
-    private $method = self::METHOD_POST;
+    static $ADD_CARD_URI = "/form/view/add_card";
+    static $PAYMENT_URI = "/form/view/pay_with_card";
+    static $ADD_AND_PAY_URI = "/form/view/add_and_pay_with_card";
+
+
+    private $method = 'POST';
     private $baseUrl = null;
     private $signatureKeyId = null;
     private $signatureSecret = null;
@@ -60,9 +66,20 @@ class FormBuilder {
     }
 
     /**
-     * TODO: not implemented yet!
+     *
+     * @return Form
      */
-    public function generateAddCardParameters(){}
+    public function generateAddCardParameters()
+    {
+        $commonParameters = $this->createFormParameterArray();
+
+        $signature = $this->createSecureSign(self::$ADD_CARD_URI, $commonParameters);
+
+        $commonParameters[self::$LANGUAGE] = $this->language;
+        $commonParameters[self::$SIGNATURE] = $signature;
+
+        return new Form(self::$METHOD_POST, $this->baseUrl, self::$ADD_CARD_URI, $commonParameters);
+    }
 
     /**
      * TODO: not implemented yet!
@@ -95,14 +112,16 @@ class FormBuilder {
     }
 
     /**
-     * @TODO: not implemented yet!
      * @param string $uri
-     * @param array  $sphNameValuePairs
+     * @param array $sphNameValuePairs
+     * @return string formatted signature
      */
     private function createSecureSign($uri, $sphNameValuePairs = array())
     {
         $parsedSphParameters = PaymentHighwayUtility::parseSphParameters($sphNameValuePairs);
         $secureSigner = new SecureSigner($this->signatureKeyId, $this->signatureSecret);
+
+        return $secureSigner->createSignature(SELF::$METHOD_POST, $uri, $parsedSphParameters);
 
     }
 

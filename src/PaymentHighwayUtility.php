@@ -22,7 +22,11 @@ class PaymentHighwayUtility {
         return Uuid::uuid4()->toString();
     }
 
-    public static function parseSphParameters($nameValuePairs)
+    /**
+     * @param array $nameValuePairs
+     * @return mixed
+     */
+    public static function parseSphParameters(array $nameValuePairs)
     {
 
         foreach($nameValuePairs as $key => $value)

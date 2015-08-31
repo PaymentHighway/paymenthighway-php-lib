@@ -66,12 +66,15 @@ class FormBuilder {
     }
 
     /**
+     * Get parameters for add card request
      *
      * @return Form
      */
     public function generateAddCardParameters()
     {
         $commonParameters = $this->createFormParameterArray();
+
+        ksort($commonParameters, SORT_DESC);
 
         $signature = $this->createSecureSign(self::$ADD_CARD_URI, $commonParameters);
 
@@ -82,14 +85,61 @@ class FormBuilder {
     }
 
     /**
-     * TODO: not implemented yet!
+     * Get parameters for Payment request.
+     *
+     * @param string $amount
+     * @param string $currency
+     * @param string $orderId
+     * @param string $description
+     * @return Form
      */
-    public function generatePaymentParameters(){}
+    public function generatePaymentParameters($amount, $currency, $orderId, $description)
+    {
+        $commonParameters = $this->createFormParameterArray();
+
+        $commonParameters[self::$SPH_AMOUNT] = $amount;
+        $commonParameters[self::$SPH_CURRENCY] = $currency;
+        $commonParameters[self::$SPH_ORDER] = $orderId;
+
+        ksort($commonParameters, SORT_DESC);
+
+        $signature = $this->createSecureSign(self::$PAYMENT_URI, $commonParameters);
+
+        $commonParameters[self::$DESCRIPTION] = $description;
+        $commonParameters[self::$LANGUAGE] = $this->language;
+        $commonParameters[self::$SIGNATURE] = $signature;
+
+        return new Form(self::$METHOD_POST, $this->baseUrl, self::$PAYMENT_URI, $commonParameters);
+
+    }
 
     /**
-     * TODO: not implemented yet!
+     * Get parameters for adding and paying with card request.
+     *
+     * @param string $amount
+     * @param string $currency
+     * @param string $orderId
+     * @param string $description
+     * @return Form
      */
-    public function generateAddCardAndPaymentParameters(){}
+    public function generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description)
+    {
+        $commonParameters = $this->createFormParameterArray();
+
+        $commonParameters[self::$SPH_AMOUNT] = $amount;
+        $commonParameters[self::$SPH_CURRENCY] = $currency;
+        $commonParameters[self::$SPH_ORDER] = $orderId;
+
+        ksort($commonParameters, SORT_DESC);
+
+        $signature = $this->createSecureSign(self::$ADD_AND_PAY_URI, $commonParameters);
+
+        $commonParameters[self::$DESCRIPTION] = $description;
+        $commonParameters[self::$LANGUAGE] = $this->language;
+        $commonParameters[self::$SIGNATURE] = $signature;
+
+        return new Form(self::$METHOD_POST, $this->baseUrl, self::$ADD_AND_PAY_URI, $commonParameters);
+    }
 
     /**
      * @return array
@@ -105,8 +155,6 @@ class FormBuilder {
             self::$SPH_TIMESTAMP => PaymentHighwayUtility::getDate(),
             self::$SPH_REQUEST_ID => PaymentHighwayUtility::createRequestId(),
         );
-
-        ksort($parameterArray, SORT_DESC);
 
         return $parameterArray;
     }

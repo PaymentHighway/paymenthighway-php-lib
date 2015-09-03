@@ -169,7 +169,7 @@ class FormBuilder {
         $parsedSphParameters = PaymentHighwayUtility::parseSphParameters($sphNameValuePairs);
         $secureSigner = new SecureSigner($this->signatureKeyId, $this->signatureSecret);
 
-        return $secureSigner->createSignature(SELF::$METHOD_POST, $uri, $parsedSphParameters);
+        return $secureSigner->createSignature(self::$METHOD_POST, $uri, $parsedSphParameters);
 
     }
 

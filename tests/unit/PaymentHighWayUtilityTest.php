@@ -2,7 +2,7 @@
 
 use \Solinor\PaymentHighway\PaymentHighwayUtility;
 
-class Unit_PaymentHighWayUtilityTest extends PHPUnit_Framework_TestCase {
+class PaymentHighWayUtilityTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @test

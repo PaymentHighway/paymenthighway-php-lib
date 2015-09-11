@@ -10,7 +10,7 @@ class PaymentHighwayUtility {
      */
     public static function getDate()
     {
-        return date('Y-m-d\TH:m:s\Z');
+        return date('Y-m-d\TH:i:s\Z');
     }
 
     /**

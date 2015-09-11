@@ -1,2 +1,6 @@
 #!/usr/bin/env bash
-../vendor/bin/phpunit $1
+php -v
+
+DIR=$(dirname $(readlink -f $0))
+
+${DIR}/../bin/phpunit ${DIR}/${1}

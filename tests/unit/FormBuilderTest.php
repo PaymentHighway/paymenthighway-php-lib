@@ -4,7 +4,7 @@
  * Class Unit_FormBuilderTest
  */
 
-class Unit_FormBuilderTest extends PHPUnit_Framework_TestCase
+class FormBuilderTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider addPaymentCardParameters

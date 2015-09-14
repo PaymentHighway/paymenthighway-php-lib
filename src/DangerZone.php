@@ -92,9 +92,9 @@ class DangerZone
     }
 
     /**
-     * Init manual card tokenization
+     * Initializes card tokenization by receiveing tokenization id that is used for the upcoming other requests.
      *
-     * @return string|PciDssDisabledException|ServerCouldNotInitializeTokenException TokenizationId as string.
+     * @return string TokenizationId as string or else throws exception.
      */
     public function tokenInit()
     {
@@ -135,15 +135,16 @@ class DangerZone
     }
 
     /**
-     * Manual card tokenization
+     * Tokenizes given card.
+     *
+     * Make sure you do not log card data!
      *
      * @param string $tokenizationId Call init to get this one.
      * @param string $expiryMonth ^[0-9]{2}$
      * @param string $expiryYear ^[0-9]{4}$
      * @param string $cvc String
      * @param string $pan
-     * @return true|PciDssDisabledException|ServerCouldNotTokenizeCardDataException Returns true if tokenization call
-     * was OK, else throws exception.
+     * @return true Returns true if tokenization call was OK or else throws exception.
      */
     public function tokenize($tokenizationId, $expiryMonth, $expiryYear, $cvc, $pan)
     {
@@ -190,12 +191,10 @@ class DangerZone
     }
 
     /**
-     * Manual card get token
-     *
-     * The result array will contain card_token, type, partial_pan, expire_year and expire_month.
+     * Gets the token for tokenized card.
      *
      * @param string $tokenizationId
-     * @return Token Returns Token object that contains token id and some card data.
+     * @return Token Returns Token object that contains token id and some card data or else throws exception.
      */
     public function getToken($tokenizationId)
     {

@@ -28,7 +28,7 @@ class SecureSigner {
      * @param array $nameValuePairs
      * @return string
      */
-    public function createSignature($method, $uri, array $nameValuePairs)
+    public function createSignature($method, $uri, array $nameValuePairs, $body = "")
     {
         return sprintf(
             '%s %s %s',
@@ -36,10 +36,11 @@ class SecureSigner {
             $this->secretKeyId,
             $this->sign(
                 sprintf(
-                    "%s\n%s\n%s",
+                    "%s\n%s\n%s%s",
                     $method,
                     $uri,
-                    $this->concatParameters($nameValuePairs)
+                    $this->concatParameters($nameValuePairs),
+                    trim($body)
                 )
             )
         );

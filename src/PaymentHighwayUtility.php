@@ -10,7 +10,8 @@ class PaymentHighwayUtility {
      */
     public static function getDate()
     {
-        return date('Y-m-d\TH:i:s\Z');
+        $date = new \DateTime('now', new \DateTimeZone('UTC'));
+        return $date->format('Y-m-d\TH:i:s\Z');
     }
 
     /**

@@ -1,7 +1,11 @@
 <?php namespace Solinor\PaymentHighway;
 
 use Httpful\Request;
+use Httpful\Response;
 use Solinor\PaymentHighway\Model\SecureSigner;
+use Solinor\PaymentHighway\Model\Request\Card;
+use Solinor\PaymentHighway\Model\Request\Token;
+
 /**
  * Class PaymentApi
  *
@@ -14,7 +18,8 @@ class PaymentApi
     static $USER_AGENT = "PaymentHighway Php Library";
     static $METHOD_POST = "POST";
     static $METHOD_GET = "GET";
-
+    static $CT_HEADER = "Content-type";
+    static $CT_HEADER_INFO = "application/json; charset=utf-8";
 
     /* Custom SPH Headers */
     static $SPH_ACCOUNT = "sph-account";
@@ -60,10 +65,11 @@ class PaymentApi
      * Init transaction handle
      *
      * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function initTransaction()
     {
-        $headers = $this->createNameValuePairs();
+        $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction';
 
         ksort($headers);
@@ -71,7 +77,7 @@ class PaymentApi
         $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers);
 
         $headers[self::$SIGNATURE] = $signature;
-        $headers['Content-Type'] = 'application/json; charset=utf-8';
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
 
         $response = Request::post($this->serviceUrl . $uri)
             ->addHeaders($headers)
@@ -81,20 +87,114 @@ class PaymentApi
     }
 
     /**
-     * TODO!
+     * @param string $uuid
+     * @param string|int $amount
+     * @param string $currency
+     *
+     * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function commitFormTransaction(){}
+    public function commitFormTransaction($uuid, $amount, $currency)
+    {
+        $headers = $this->createHeaderNameValuePairs();
+        $uri = '/transaction/'.$uuid.'/commit';
+
+        ksort($headers);
+
+        $body = array(
+            'amount' => $amount,
+            'currency' => $currency,
+        );
+
+        $jsonBody = json_encode($body);
+
+        $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        $response = Request::post($this->serviceUrl . $uri)
+            ->addHeaders($headers)
+            ->body($jsonBody)
+            ->send();
+
+        return $response;
+    }
 
 
     /**
-     * TODO!
+     * Charge the credit card
+     * @param string|UUID $transactionId
+     * @param Card|Token $request
+     * @param string|int $amount
+     * @param string $currency
+     * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function debitTransaction(){}
+    public function debitTransaction( $transactionId, $request, $amount, $currency )
+    {
+        $headers = $this->createHeaderNameValuePairs();
+        $uri = '/transaction/' . $transactionId . '/debit';
+
+        ksort($headers);
+
+        $body = array(
+            'amount' => $amount,
+            'currency' => $currency,
+        );
+        $body += $this->createTransactionRequestBody( $request );
+
+        $jsonBody = json_encode($body);
+
+        $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        $response = Request::post($this->serviceUrl . $uri)
+            ->addHeaders($headers)
+            ->body($jsonBody)
+            ->send();
+
+        return $response;
+
+    }
 
     /**
-     * TODO!
+     * @param $transactionId
+     * @param $request
+     * @param $amount
+     * @param $currency
+     * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function creditTransaction(){}
+    public function creditTransaction( $transactionId, $request, $amount, $currency )
+    {
+        $headers = $this->createHeaderNameValuePairs();
+        $uri = '/transaction/' . $transactionId . '/credit';
+
+        ksort($headers);
+
+        $body = $this->createTransactionRequestBody( $request );
+        $body += array(
+            'amount' => $amount,
+            'currency' => $currency,
+        );
+
+        $jsonBody = json_encode($body);
+
+        $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        $response = Request::post($this->serviceUrl . $uri)
+            ->addHeaders($headers)
+            ->body($jsonBody)
+            ->send();
+
+        return $response;
+    }
 
     /**
      * TODO!
@@ -121,7 +221,7 @@ class PaymentApi
      *
      * @return array
      */
-    private function createNameValuePairs() {
+    private function createHeaderNameValuePairs() {
 
         $nameValuePairs = array(
             "sph-account" => $this->account,
@@ -134,16 +234,34 @@ class PaymentApi
     }
 
     /**
+     * @param string $method
      * @param string $uri
      * @param array $sphNameValuePairs
+     * @param string $body
      * @return string formatted signature
      */
-    private function createSecureSign($method, $uri, $sphNameValuePairs = array())
+    private function createSecureSign($method, $uri, array $sphNameValuePairs = array(), $body = "")
     {
         $parsedSphParameters = PaymentHighwayUtility::parseSphParameters($sphNameValuePairs);
         $secureSigner = new SecureSigner($this->signatureKeyId, $this->signatureSecret);
 
-        return $secureSigner->createSignature($method, $uri, $parsedSphParameters);
+        return $secureSigner->createSignature($method, $uri, $parsedSphParameters, $body);
 
+    }
+
+    /**
+     * @param Card|Token $request
+     * @return array|mixed
+     */
+    private function createTransactionRequestBody( $request )
+    {
+        if($request instanceof Card)
+        {
+            return array('card' => $request);
+        }
+        if( $request instanceof Token)
+        {
+            return array('token' => $request);
+        }
     }
 }

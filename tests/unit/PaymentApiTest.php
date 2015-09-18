@@ -9,43 +9,75 @@ use Solinor\PaymentHighway\PaymentApi;
 class PaymentApiTest extends PHPUnit_Framework_TestCase
 {
 
-    public function setUp()
+    const ValidExpiryMonth = '11';
+    const ValidExpiryYear = '2017';
+    const ValidPan = '4153013999700024';
+    const ValidCvc = '024';
+    const ValidType = 'Visa';
+
+    const InvalidExpiryMonth = '10';
+    const InvalidExpiryYear = '2014';
+    const InvalidPan = '415301399900024';
+    const InvalidCvc = '022';
+
+    /**
+     * @test
+     * @return PaymentApi
+     */
+    public function paymentApiExists()
     {
-        // set timezone to UTC-0
-        date_default_timezone_set('UTC');
+        $api = new PaymentApi('https://v1-hub-staging.sph-test-solinor.com/',  'testKey',  'testSecret',  'test',  'test_merchantId');
+
+        $this->assertInstanceOf('Solinor\PaymentHighway\PaymentApi',$api);
+
+        return $api;
     }
 
     /**
-     * @dataProvider provider
+     *
+     * @depends paymentApiExists
      * @test
+     *
+     * @param PaymentApi $api
+     * @return string
      */
-    public function initHandlerSuccessfully($serviceUrl,  $signatureKeyId,  $signatureSecret,  $account,  $merchant)
+    public function initHandlerSuccessfully( PaymentApi $api )
     {
-        $api = new PaymentApi($serviceUrl,  $signatureKeyId,  $signatureSecret,  $account,  $merchant);
 
         $jsonresponse = $api->initTransaction()->body;
 
         $this->assertRegExp('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $jsonresponse->id);
         $this->assertEquals(100, $jsonresponse->result->code);
         $this->assertEquals('OK', $jsonresponse->result->message);
+
+        return $jsonresponse->id;
     }
 
+    /**
+     * @depends      paymentApiExists
+     * @depends      initHandlerSuccessfully
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     */
+    public function debitTransactionSuccess(PaymentApi $api, $transactionId )
+    {
+        $response = $api->debitTransaction( $transactionId, $this->getValidCard(), 99, 'EUR')->body;
+
+        $this->assertEquals("100", $response->result->code);
+        $this->assertEquals("OK", $response->result->message);
+    }
 
     /**
-     * testdata provider for paymentapi tests
-     *
-     * @return array
+     * @return \Solinor\PaymentHighway\Model\Request\Card
      */
-    public function provider()
+    private function getValidCard()
     {
-        return array(
-            array(
-                'https://v1-hub-staging.sph-test-solinor.com/',
-                'testKey',
-                'testSecret',
-                'test',
-                'test_merchantId'
-            )
+        return new \Solinor\PaymentHighway\Model\Request\Card(
+            self::ValidPan,
+            self::ValidExpiryYear,
+            self::ValidExpiryMonth,
+            self::ValidCvc
         );
     }
 }

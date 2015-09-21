@@ -197,24 +197,103 @@ class PaymentApi
     }
 
     /**
-     * TODO!
+     * @param string $transactionId
+     * @param string $amount
+     * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function revertTransaction(){}
+    public function revertTransaction($transactionId, $amount)
+    {
+        $headers = $this->createHeaderNameValuePairs();
+        $uri = '/transaction/' . $transactionId . '/revert';
+
+        ksort($headers);
+
+        $jsonBody = json_encode(array('amount' => $amount));
+
+        $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        $response = Request::post($this->serviceUrl . $uri)
+            ->addHeaders($headers)
+            ->body($jsonBody)
+            ->send();
+
+        return $response;
+    }
 
     /**
-     * TODO!
+     * @param string $transactionId
+     * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function statusTransaction(){}
+    public function statusTransaction( $transactionId )
+    {
+        $headers = $this->createHeaderNameValuePairs();
+        $uri = '/transaction/' . $transactionId;
+
+        ksort($headers);
+
+        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        $response = Request::get($this->serviceUrl . $uri)
+            ->addHeaders($headers)
+            ->send();
+
+        return $response;
+    }
 
     /**
-     * TODO!
+     * @param $tokenizeId
+     * @return \Httpful\Response
      */
-    public function tokenize(){}
+    public function tokenize( $tokenizeId )
+    {
+        $headers = $this->createHeaderNameValuePairs();
+        $uri = '/tokenization/' . $tokenizeId;
+
+        ksort($headers);
+
+        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        $response = Request::get($this->serviceUrl . $uri)
+            ->addHeaders($headers)
+            ->send();
+
+        return $response;
+    }
 
     /**
-     * TODO!
+     * @param string $date date in format yyyyMMdd
+     * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function getReport(){}
+    public function getReport( $date )
+    {
+        $headers = $this->createHeaderNameValuePairs();
+        $uri = '/report/batch/' . $date;
+
+        ksort($headers);
+
+        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        $response = Request::get($this->serviceUrl . $uri)
+            ->addHeaders($headers)
+            ->send();
+
+        return $response;
+    }
 
     /**
      * Create name value pairs

@@ -47,7 +47,7 @@ class PaymentApiTest extends PHPUnit_Framework_TestCase
         $jsonresponse = $api->initTransaction()->body;
 
         $this->assertRegExp('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $jsonresponse->id);
-        $this->assertEquals(100, $jsonresponse->result->code);
+        $this->assertEquals('100', $jsonresponse->result->code);
         $this->assertEquals('OK', $jsonresponse->result->message);
 
         return $jsonresponse->id;
@@ -59,13 +59,81 @@ class PaymentApiTest extends PHPUnit_Framework_TestCase
      * @test
      * @param PaymentApi $api
      * @param string $transactionId
+     * @return string transactionId
      */
     public function debitTransactionSuccess(PaymentApi $api, $transactionId )
     {
         $response = $api->debitTransaction( $transactionId, $this->getValidCard(), 99, 'EUR')->body;
 
-        $this->assertEquals("100", $response->result->code);
-        $this->assertEquals("OK", $response->result->message);
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
+        return $transactionId;
+    }
+
+    /**
+     * @depends      paymentApiExists
+     * @depends      debitTransactionSuccess
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     */
+    public function transactionStatusAfterDebit(PaymentApi $api, $transactionId)
+    {
+        $response = $api->statusTransaction($transactionId)->body;
+
+        $this->assertEquals('4000', $response->transaction->status->code);
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+    }
+
+    /**
+     * @depends paymentApiExists
+     * @depends debitTransactionSuccess
+     * @test
+     *
+     * @param PaymentApi $api
+     * @param $transactionId
+     */
+    public function revertTransactionSuccess(PaymentApi $api, $transactionId)
+    {
+        $response = $api->revertTransaction($transactionId, 99)->body;
+
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
+        return $transactionId;
+    }
+
+    /**
+     * @depends      paymentApiExists
+     * @depends      revertTransactionSuccess
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     */
+    public function transactionStatusAfterRevert(PaymentApi $api, $transactionId)
+    {
+        $response = $api->statusTransaction($transactionId)->body;
+
+        $this->assertEquals('5700', $response->transaction->status->code);
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+    }
+
+    /**
+     * @test
+     * @depends paymentApiExists
+     */
+    public function getReportSuccess( PaymentApi $api )
+    {
+        $date = date('Ymd');
+
+        $response = $api->getReport($date)->body;
+
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
     }
 
     /**

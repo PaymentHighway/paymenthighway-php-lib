@@ -1,15 +1,16 @@
-<?php
+<?php namespace Solinor\PaymentHighway\Tests\Unit;
 
 use \Solinor\PaymentHighway\PaymentHighwayUtility;
+use Solinor\PaymentHighway\Tests\TestBase;
 
-class PaymentHighWayUtilityTest extends PHPUnit_Framework_TestCase {
+class PaymentHighWayUtilityTest extends TestBase {
 
     /**
      * @test
      */
     public function dateIsFormattedCorrectly()
     {
-        $date = \Solinor\PaymentHighway\PaymentHighwayUtility::getDate();
+        $date = PaymentHighwayUtility::getDate();
 
         $this->assertRegExp('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/', $date);
     }

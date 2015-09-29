@@ -2,7 +2,7 @@
 
 
 use Solinor\PaymentHighway\Model\Form;
-use Solinor\PaymentHighway\Model\SecureSigner;
+use Solinor\PaymentHighway\Model\Security\SecureSigner;
 
 class FormBuilder {
 

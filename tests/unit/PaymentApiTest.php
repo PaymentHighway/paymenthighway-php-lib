@@ -1,12 +1,10 @@
-<?php
+<?php namespace Solinor\PaymentHighway\Tests\Unit;
 
-/**
- * Class PaymentApiTest
- */
-
+use Solinor\PaymentHighway\Model\Request\Card;
 use Solinor\PaymentHighway\PaymentApi;
+use Solinor\PaymentHighway\Tests\TestBase;
 
-class PaymentApiTest extends PHPUnit_Framework_TestCase
+class PaymentApiTest extends TestBase
 {
 
     const ValidExpiryMonth = '11';
@@ -63,7 +61,10 @@ class PaymentApiTest extends PHPUnit_Framework_TestCase
      */
     public function debitTransactionSuccess(PaymentApi $api, $transactionId )
     {
-        $response = $api->debitTransaction( $transactionId, $this->getValidCard(), 99, 'EUR')->body;
+
+        $card = $this->getValidCard();
+
+        $response = $api->debitTransaction( $transactionId, $card)->body;
 
         $this->assertEquals('100', $response->result->code);
         $this->assertEquals('OK', $response->result->message);
@@ -137,15 +138,18 @@ class PaymentApiTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Solinor\PaymentHighway\Model\Request\Card
+     * @return Card
      */
     private function getValidCard()
     {
-        return new \Solinor\PaymentHighway\Model\Request\Card(
+        return new Card(
+            99,
+            'EUR',
             self::ValidPan,
             self::ValidExpiryYear,
             self::ValidExpiryMonth,
             self::ValidCvc
+
         );
     }
 }

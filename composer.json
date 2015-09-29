@@ -21,6 +21,11 @@
       "Solinor\\PaymentHighway\\": "src/"
     }
   },
+  "autoload-dev" : {
+    "psr-4" : {
+      "Solinor\\PaymentHighway\\Tests\\": "tests/"
+    }
+  },
   "config": {
     "bin-dir": "bin"
   },

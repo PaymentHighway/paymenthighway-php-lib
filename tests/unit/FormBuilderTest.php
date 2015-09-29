@@ -1,10 +1,8 @@
-<?php
+<?php namespace Solinor\PaymentHighway\Tests\Unit;
 
-/**
- * Class Unit_FormBuilderTest
- */
+use Solinor\PaymentHighway\Tests\TestBase;
 
-class FormBuilderTest extends PHPUnit_Framework_TestCase
+class FormBuilderTest extends TestBase
 {
     /**
      * @dataProvider addPaymentCardParameters

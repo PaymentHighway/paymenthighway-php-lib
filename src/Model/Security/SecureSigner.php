@@ -1,4 +1,4 @@
-<?php namespace Solinor\PaymentHighway\Model;
+<?php namespace Solinor\PaymentHighway\Model\Security;
 
 /**
  * Class SecureSigner

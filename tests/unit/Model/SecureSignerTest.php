@@ -1,12 +1,13 @@
-<?php
+<?php namespace Solinor\PaymentHighway\Tests\Unit\Model;
 
-use \Solinor\PaymentHighway\Model\SecureSigner;
+use \Solinor\PaymentHighway\Model\Security\SecureSigner;
+use Solinor\PaymentHighway\Tests\TestBase;
 
 /**
  * Class Unit_Model_SecureSignerTest
  */
 
-class Unit_Model_SecureSignerTest extends PHPUnit_Framework_TestCase
+class SecureSignerTest extends TestBase
 {
     static $KEYID = 'testKeyId';
     static $KEY = 'somesemirandomkeydata';

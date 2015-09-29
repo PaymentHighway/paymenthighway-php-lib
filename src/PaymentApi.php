@@ -2,7 +2,8 @@
 
 use Httpful\Request;
 use Httpful\Response;
-use Solinor\PaymentHighway\Model\SecureSigner;
+use Solinor\PaymentHighway\Model\Contracts\Request as TransactionRequest;
+use Solinor\PaymentHighway\Model\Security\SecureSigner;
 use Solinor\PaymentHighway\Model\Request\Card;
 use Solinor\PaymentHighway\Model\Request\Token;
 
@@ -88,25 +89,18 @@ class PaymentApi
 
     /**
      * @param string $uuid
-     * @param string|int $amount
-     * @param string $currency
-     *
-     * @return \Httpful\Response
+     * @param TransactionRequest $transaction
+     * @return Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function commitFormTransaction($uuid, $amount, $currency)
+    public function commitFormTransaction($uuid, TransactionRequest $transaction )
     {
         $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction/'.$uuid.'/commit';
 
         ksort($headers);
 
-        $body = array(
-            'amount' => $amount,
-            'currency' => $currency,
-        );
-
-        $jsonBody = json_encode($body);
+        $jsonBody = $transaction->toJson();
 
         $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
 
@@ -125,26 +119,18 @@ class PaymentApi
     /**
      * Charge the credit card
      * @param string|UUID $transactionId
-     * @param Card|Token $request
-     * @param string|int $amount
-     * @param string $currency
-     * @return \Httpful\Response
+     * @param Token|Card $transaction
+     * @return Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function debitTransaction( $transactionId, $request, $amount, $currency )
+    public function debitTransaction( $transactionId, TransactionRequest $transaction )
     {
         $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction/' . $transactionId . '/debit';
 
         ksort($headers);
 
-        $body = array(
-            'amount' => $amount,
-            'currency' => $currency,
-        );
-        $body += $this->createTransactionRequestBody( $request );
-
-        $jsonBody = json_encode($body);
+        $jsonBody = $transaction->toJson();
 
         $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
 
@@ -160,41 +146,6 @@ class PaymentApi
 
     }
 
-    /**
-     * @param $transactionId
-     * @param $request
-     * @param $amount
-     * @param $currency
-     * @return \Httpful\Response
-     * @throws \Httpful\Exception\ConnectionErrorException
-     */
-    public function creditTransaction( $transactionId, $request, $amount, $currency )
-    {
-        $headers = $this->createHeaderNameValuePairs();
-        $uri = '/transaction/' . $transactionId . '/credit';
-
-        ksort($headers);
-
-        $body = $this->createTransactionRequestBody( $request );
-        $body += array(
-            'amount' => $amount,
-            'currency' => $currency,
-        );
-
-        $jsonBody = json_encode($body);
-
-        $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::post($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->body($jsonBody)
-            ->send();
-
-        return $response;
-    }
 
     /**
      * @param string $transactionId
@@ -326,21 +277,5 @@ class PaymentApi
 
         return $secureSigner->createSignature($method, $uri, $parsedSphParameters, $body);
 
-    }
-
-    /**
-     * @param Card|Token $request
-     * @return array|mixed
-     */
-    private function createTransactionRequestBody( $request )
-    {
-        if($request instanceof Card)
-        {
-            return array('card' => $request);
-        }
-        if( $request instanceof Token)
-        {
-            return array('token' => $request);
-        }
     }
 }

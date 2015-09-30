@@ -17,6 +17,7 @@ class FormBuilder {
     static $SPH_CANCEL_URL = "sph-cancel-url";
     static $SPH_REQUEST_ID = "sph-request-id";
     static $SPH_TIMESTAMP = "sph-timestamp";
+    static $SPH_ACCEPT_CVC_REQUIRED = "sph-accept-cvc-required";
     static $LANGUAGE = "language";
     static $DESCRIPTION = "description";
     static $SIGNATURE = "signature";
@@ -68,11 +69,15 @@ class FormBuilder {
     /**
      * Get parameters for add card request
      *
+     * @param bool $accept_cvc_required
      * @return Form
      */
-    public function generateAddCardParameters()
+    public function generateAddCardParameters( $accept_cvc_required = false )
     {
         $commonParameters = $this->createFormParameterArray();
+
+        if($accept_cvc_required)
+            $commonParameters[self::$SPH_ACCEPT_CVC_REQUIRED] = true;
 
         ksort($commonParameters, SORT_DESC);
 

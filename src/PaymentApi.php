@@ -2,10 +2,8 @@
 
 use Httpful\Request;
 use Httpful\Response;
-use Solinor\PaymentHighway\Model\Contracts\Request as TransactionRequest;
+use Solinor\PaymentHighway\Model\Request\Transaction;
 use Solinor\PaymentHighway\Model\Security\SecureSigner;
-use Solinor\PaymentHighway\Model\Request\Card;
-use Solinor\PaymentHighway\Model\Request\Token;
 
 /**
  * Class PaymentApi
@@ -88,19 +86,19 @@ class PaymentApi
     }
 
     /**
-     * @param string $uuid
-     * @param TransactionRequest $transaction
+     * @param string|UUID $transactionId
+     * @param Transaction $transaction
      * @return Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function commitFormTransaction($uuid, TransactionRequest $transaction )
+    public function commitFormTransaction( $transactionId, Transaction $transaction )
     {
         $headers = $this->createHeaderNameValuePairs();
-        $uri = '/transaction/'.$uuid.'/commit';
+        $uri = '/transaction/'. $transactionId .'/commit';
 
         ksort($headers);
 
-        $jsonBody = $transaction->toJson();
+        $jsonBody = json_encode($transaction);
 
         $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
 
@@ -119,18 +117,18 @@ class PaymentApi
     /**
      * Charge the credit card
      * @param string|UUID $transactionId
-     * @param Token|Card $transaction
+     * @param Transaction $transaction
      * @return Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function debitTransaction( $transactionId, TransactionRequest $transaction )
+    public function debitTransaction( $transactionId, Transaction $transaction )
     {
         $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction/' . $transactionId . '/debit';
 
         ksort($headers);
 
-        $jsonBody = $transaction->toJson();
+        $jsonBody = json_encode($transaction);
 
         $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
 
@@ -145,6 +143,7 @@ class PaymentApi
         return $response;
 
     }
+
 
 
     /**
@@ -184,6 +183,34 @@ class PaymentApi
     {
         $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction/' . $transactionId;
+
+        ksort($headers);
+
+        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        $response = Request::get($this->serviceUrl . $uri)
+            ->addHeaders($headers)
+            ->send();
+
+        return $response;
+    }
+
+    /**
+     * @param string $orderId
+     * @param int $limit between 1 and 100
+     * @param string $startDate acceptable formats yyyy-MM-dd|yyyy-MM-dd'T'HH:mm:ss'Z'
+     * @param string $endDate acceptable formats yyyy-MM-dd|yyyy-MM-dd'T'HH:mm:ss'Z'
+     * @return \Httpful\associative|string
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function searchByOrderId( $orderId, $limit = null, $startDate = null , $endDate = null )
+    {
+        $headers = $this->createHeaderNameValuePairs();
+        $uri = '/transactions?order=' . $orderId;
+        $uri += $limit !== null ? "&limit=".$limit : "";
 
         ksort($headers);
 

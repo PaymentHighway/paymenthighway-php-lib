@@ -1,6 +1,7 @@
 <?php namespace Solinor\PaymentHighway\Tests\Unit;
 
-use Solinor\PaymentHighway\Model\Request\Card;
+use Solinor\PaymentHighway\Model\Card;
+use Solinor\PaymentHighway\Model\Request\Transaction;
 use Solinor\PaymentHighway\PaymentApi;
 use Solinor\PaymentHighway\Tests\TestBase;
 
@@ -142,14 +143,15 @@ class PaymentApiTest extends TestBase
      */
     private function getValidCard()
     {
-        return new Card(
+        return new Transaction(
+            new Card(
+                self::ValidPan,
+                self::ValidExpiryYear,
+                self::ValidExpiryMonth,
+                self::ValidCvc
+            ),
             99,
-            'EUR',
-            self::ValidPan,
-            self::ValidExpiryYear,
-            self::ValidExpiryMonth,
-            self::ValidCvc
-
+            'EUR'
         );
     }
 }

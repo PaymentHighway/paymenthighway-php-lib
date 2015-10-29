@@ -4,6 +4,7 @@ use Solinor\PaymentHighway\Tests\TestBase;
 
 class FormBuilderTest extends TestBase
 {
+
     /**
      * @dataProvider addPaymentCardParameters
      * @test

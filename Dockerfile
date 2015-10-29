@@ -8,7 +8,7 @@ FROM centos:6
 
 MAINTAINER Solinor
 
-RUN yum clean all
-RUN yum update -y
-RUN yum -y install php php-cli php-xml
+RUN yum install epel-release -y && yum clean all && yum update -y
+RUN rpm -i https://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-14.ius.centos6.noarch.rpm
+RUN yum -y install php54 php54-cli php54-xml
 

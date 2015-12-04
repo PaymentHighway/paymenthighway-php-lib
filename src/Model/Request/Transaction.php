@@ -21,7 +21,9 @@ class Transaction implements \JsonSerializable
      * @param Card|Token $request
      * @param int $amount
      * @param string $currency
+     * @param bool $blocking
      * @param string $orderId
+     * @throws Exception
      */
     public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null )
     {
@@ -33,14 +35,21 @@ class Transaction implements \JsonSerializable
         $this->setRequestByType($request);
     }
 
+    /**
+     * @param $request
+     * @throws Exception
+     */
     private function setRequestByType( $request )
     {
-        if( $request instanceof Token )
+        if( $request instanceof Token ){
             $this->token = $request;
-
-        if( $request instanceof Card )
+        }
+        elseif( $request instanceof Card ){
             $this->card = $request;
-
+        }
+        else{
+            throw new Exception("Invalid request object type must be type of Card or Token");
+        }
     }
 
     /**

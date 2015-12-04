@@ -26,16 +26,25 @@ class Form {
         $this->parameters = $parameters;
     }
 
+    /**
+     * @return null|string
+     */
     public function getMethod()
     {
         return $this->method;
     }
 
+    /**
+     * @return string
+     */
     public function getAction()
     {
         return $this->baseurl . $this->actionurl;
     }
 
+    /**
+     * @return array
+     */
     public function getParameters()
     {
         return $this->parameters;

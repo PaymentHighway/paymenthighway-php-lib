@@ -1,7 +1,7 @@
 <?php namespace Solinor\PaymentHighway\Model\Response;
 
 /**
- * Class Token
+ * Class Token use in DangerZone responses.
  * @package Solinor\PaymentHighway\Model
  */
 

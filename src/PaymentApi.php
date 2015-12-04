@@ -19,6 +19,7 @@ class PaymentApi
     static $METHOD_GET = "GET";
     static $CT_HEADER = "Content-type";
     static $CT_HEADER_INFO = "application/json; charset=utf-8";
+    static $API_VERSION_INFO = "";
 
     /* Custom SPH Headers */
     static $SPH_ACCOUNT = "sph-account";
@@ -31,6 +32,7 @@ class PaymentApi
     static $SPH_CANCEL_URL = "sph-cancel-url";
     static $SPH_REQUEST_ID = "sph-request-id";
     static $SPH_TIMESTAMP = "sph-timestamp";
+    static $SPH_API_VERSION = "sph-api-version";
     static $LANGUAGE = "language";
     static $DESCRIPTION = "description";
     static $SIGNATURE = "signature";
@@ -41,6 +43,7 @@ class PaymentApi
     private $signatureSecret = null;
     private $account = null;
     private $merchant = null;
+    private $apiversion = "";
 
     /**
      * Constructor
@@ -51,13 +54,14 @@ class PaymentApi
      * @param string $signatureKeyId
      * @param string $signatureSecret
      */
-    public function __construct( $serviceUrl,  $signatureKeyId,  $signatureSecret,  $account,  $merchant) 
+    public function __construct( $serviceUrl,  $signatureKeyId,  $signatureSecret,  $account,  $merchant, $apiversion = "20150605")
     {
         $this->serviceUrl = $serviceUrl;
         $this->signatureKeyId = $signatureKeyId;
         $this->signatureSecret = $signatureSecret;
         $this->account = $account;
         $this->merchant = $merchant;
+        $this->apiversion = $apiversion;
     }
 
     /**
@@ -281,10 +285,11 @@ class PaymentApi
     private function createHeaderNameValuePairs() {
 
         $nameValuePairs = array(
-            "sph-account" => $this->account,
-            "sph-merchant" => $this->merchant,
-            "sph-timestamp" => PaymentHighwayUtility::getDate(),
-            "sph-request-id" => PaymentHighwayUtility::createRequestId(),
+            self::$SPH_ACCOUNT => $this->account,
+            self::$SPH_MERCHANT => $this->merchant,
+            self::$SPH_TIMESTAMP => PaymentHighwayUtility::getDate(),
+            self::$SPH_REQUEST_ID => PaymentHighwayUtility::createRequestId(),
+            self::$SPH_API_VERSION => $this->apiversion
         );
 
         return $nameValuePairs;

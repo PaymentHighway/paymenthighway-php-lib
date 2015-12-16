@@ -29,7 +29,7 @@ class Transaction implements \JsonSerializable
     {
         $this->amount = $amount;
         $this->currency = $currency;
-        $this->orderId = $orderId;
+        $this->order = $orderId;
         $this->blocking = $blocking;
 
         $this->setRequestByType($request);

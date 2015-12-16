@@ -4,6 +4,7 @@ use Httpful\Request;
 use Httpful\Response;
 use Solinor\PaymentHighway\Model\Request\Transaction;
 use Solinor\PaymentHighway\Model\Security\SecureSigner;
+use Respect\Validation\Validator;
 
 /**
  * Class PaymentApi
@@ -49,10 +50,11 @@ class PaymentApi
      * Constructor
      *
      * @param string $serviceUrl
-     * @param string $account
-     * @param string $merchant
      * @param string $signatureKeyId
      * @param string $signatureSecret
+     * @param string $account
+     * @param string $merchant
+     * @param string $apiversion
      */
     public function __construct( $serviceUrl,  $signatureKeyId,  $signatureSecret,  $account,  $merchant, $apiversion = "20150605")
     {
@@ -205,8 +207,8 @@ class PaymentApi
     /**
      * @param string $orderId
      * @param int $limit between 1 and 100
-     * @param string $startDate acceptable formats yyyy-MM-dd|yyyy-MM-dd'T'HH:mm:ss'Z'
-     * @param string $endDate acceptable formats yyyy-MM-dd|yyyy-MM-dd'T'HH:mm:ss'Z'
+     * @param string $startDate acceptable format yyyy-MM-dd'T'HH:mm:ss'Z'
+     * @param string $endDate acceptable format yyyy-MM-dd'T'HH:mm:ss'Z'
      * @return \Httpful\associative|string
      * @throws \Httpful\Exception\ConnectionErrorException
      */
@@ -214,7 +216,17 @@ class PaymentApi
     {
         $headers = $this->createHeaderNameValuePairs();
         $uri = '/transactions?order=' . $orderId;
-        $uri += $limit !== null ? "&limit=".$limit : "";
+
+        if(Validator::intVal()->max(100, true)->notEmpty()->validate($limit)){
+            $uri += '&limit='.$limit;
+        }
+        if(Validator::date("Y-m-d'T'HH:mm:ss'Z'")->notEmpty()->validate($startDate)){
+            $uri += '&start-date='.urlencode($startDate);
+        }
+        if(Validator::date("Y-m-d'T'HH:mm:ss'Z'")->notEmpty()->validate($endDate)){
+            $uri += '&end-date='.urlencode($limit);
+        }
+
 
         ksort($headers);
 

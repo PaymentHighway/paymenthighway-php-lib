@@ -19,6 +19,15 @@ class PaymentApiTest extends TestBase
     const InvalidPan = '415301399900024';
     const InvalidCvc = '022';
 
+    protected static $orderId;
+
+    /**
+     * setup uniqid for each test!
+     */
+    public static function setupBeforeClass(){
+        self::$orderId = uniqid();
+    }
+
     /**
      * @test
      * @return PaymentApi
@@ -71,6 +80,23 @@ class PaymentApiTest extends TestBase
         $this->assertEquals('OK', $response->result->message);
 
         return $transactionId;
+    }
+
+    /**
+     * @test
+     * @depends     paymentApiExists
+     * @depends     debitTransactionSuccess
+     *
+     * @param PaymentApi $api
+     */
+    public function searchByOrderIdSuccess(PaymentApi $api){
+
+        $response = $api->searchByOrderId(self::$orderId)->body;
+
+        $this->assertCount(1, $response->transactions);
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
     }
 
     /**
@@ -151,7 +177,9 @@ class PaymentApiTest extends TestBase
                 self::ValidCvc
             ),
             99,
-            'EUR'
+            'EUR',
+            true,
+            self::$orderId
         );
     }
 }

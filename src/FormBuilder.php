@@ -17,6 +17,7 @@ class FormBuilder {
     static $SPH_CANCEL_URL = "sph-cancel-url";
     static $SPH_REQUEST_ID = "sph-request-id";
     static $SPH_TIMESTAMP = "sph-timestamp";
+    static $SPH_TOKEN = "sph-token";
     static $SPH_ACCEPT_CVC_REQUIRED = "sph-accept-cvc-required";
     static $LANGUAGE = "language";
     static $DESCRIPTION = "description";
@@ -25,6 +26,7 @@ class FormBuilder {
     static $ADD_CARD_URI = "/form/view/add_card";
     static $PAYMENT_URI = "/form/view/pay_with_card";
     static $ADD_AND_PAY_URI = "/form/view/add_and_pay_with_card";
+    static $CVC_AND_TOKEN_URI = "/form/view/pay_with_token_and_cvc";
 
 
     private $method = 'POST';
@@ -86,7 +88,7 @@ class FormBuilder {
         $commonParameters[self::$LANGUAGE] = $this->language;
         $commonParameters[self::$SIGNATURE] = $signature;
 
-        return new Form(self::$METHOD_POST, $this->baseUrl, self::$ADD_CARD_URI, $commonParameters);
+        return new Form($this->method, $this->baseUrl, self::$ADD_CARD_URI, $commonParameters);
     }
 
     /**
@@ -114,7 +116,7 @@ class FormBuilder {
         $commonParameters[self::$LANGUAGE] = $this->language;
         $commonParameters[self::$SIGNATURE] = $signature;
 
-        return new Form(self::$METHOD_POST, $this->baseUrl, self::$PAYMENT_URI, $commonParameters);
+        return new Form($this->method, $this->baseUrl, self::$PAYMENT_URI, $commonParameters);
 
     }
 
@@ -143,7 +145,34 @@ class FormBuilder {
         $commonParameters[self::$LANGUAGE] = $this->language;
         $commonParameters[self::$SIGNATURE] = $signature;
 
-        return new Form(self::$METHOD_POST, $this->baseUrl, self::$ADD_AND_PAY_URI, $commonParameters);
+        return new Form($this->method, $this->baseUrl, self::$ADD_AND_PAY_URI, $commonParameters);
+    }
+
+    /**
+     * @param string|UUID $tokenId
+     * @param int $amount
+     * @param string $currency
+     * @param string $orderId
+     * @param string $description
+     * @return Form
+     */
+    public function generatePayWithTokenAndCvcParameters( $tokenId, $amount, $currency, $orderId, $description) {
+
+        $commonParameters = $this->createFormParameterArray();
+
+        $commonParameters[self::$SPH_AMOUNT] = $amount;
+        $commonParameters[self::$SPH_CURRENCY] = $currency;
+        $commonParameters[self::$SPH_ORDER] = $orderId;
+        $commonParameters[self::$SPH_TOKEN] = $tokenId;
+        $commonParameters[self::$DESCRIPTION] = $description;
+
+        ksort($commonParameters,SORT_DESC);
+
+        $signature = $this->createSecureSign(self::$CVC_AND_TOKEN_URI,$commonParameters);
+
+        $commonParameters[self::$SIGNATURE] = $signature;
+
+        return new Form($this->method, $this->baseUrl, self::$CVC_AND_TOKEN_URI, $commonParameters);
     }
 
     /**
@@ -174,7 +203,7 @@ class FormBuilder {
         $parsedSphParameters = PaymentHighwayUtility::parseSphParameters($sphNameValuePairs);
         $secureSigner = new SecureSigner($this->signatureKeyId, $this->signatureSecret);
 
-        return $secureSigner->createSignature(self::$METHOD_POST, $uri, $parsedSphParameters);
+        return $secureSigner->createSignature($this->method, $uri, $parsedSphParameters);
 
     }
 

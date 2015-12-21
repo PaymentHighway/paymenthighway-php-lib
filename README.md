@@ -123,7 +123,6 @@ In order to do safe transactions, an execution model is used where the first cal
 In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must be used to get the actual card token. 
 
 Initializing the Payment API
-
 ```php
 use Solinor\PaymentHighway\PaymentApi
 
@@ -137,7 +136,6 @@ $paymentApi = new PaymentApi($serviceUrl, $signatureKeyId, $signatureSecret, $ac
 ```
         
 Example Commit Form Transaction
-
 ```php
 $transactionId = ""; // get sph-transaction-id as a GET parameter
 $amount = "1999";
@@ -147,7 +145,6 @@ $response = $paymentApi->commitTransaction($transactionId, $amount, $currency); 
 ```
 
 Example Init transaction
-
 ```php
 $response = $paymentApi->initTransaction();
 ```
@@ -155,7 +152,8 @@ $response = $paymentApi->initTransaction();
 Example Tokenize (get the actual card token by using token id)
 ```php
 $response = $paymentApi->tokenize( $tokenizationId );
-```			
+```
+
 Example Debit with Token
 ```php
 $token = new \Solinor\PaymentHighway\Model\Token( $tokenId );
@@ -163,28 +161,30 @@ $token = new \Solinor\PaymentHighway\Model\Token( $tokenId );
 $transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $token, $amount, $currency);
 
 $response = $paymentApi->debitTransaction( $transactionId, $transaction);
-```	
+```
+
 Example Revert
 ```php
 $response = $paymentApi->revertTransaction("transactionId", "amount");
 ```
+
 Example Transaction Status
 ```php
 $status = paymentApi->statusTransaction( $transactionId );
-```	
+```
+
 Example Daily Batch Report
 ```php
 $response = paymentApi->getReport( $date ); //in "date('Y-M-D')" format
-```	
+```
+
 Example Order Status
 ```php
 $response = paymentApi->searchByOrderId( $orderId );
 ```	
 
 # Errors
-
 Payment Highway API can raises exceptions and you should handle them in graceful manner.
-
 ```php
 try {
 	// Use Payment Highway's bindings...
@@ -195,5 +195,4 @@ catch (Exception $e) {
 ```
 
 # Help us make it better
-
 Please tell us how we can make the API better. If you have a specific feature request or if you found a bug, please use GitHub issues. Fork these docs and send a pull request with improvements.

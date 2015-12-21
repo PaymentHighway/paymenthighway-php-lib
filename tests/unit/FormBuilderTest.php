@@ -1,5 +1,6 @@
 <?php namespace Solinor\PaymentHighway\Tests\Unit;
 
+use Rhumsaa\Uuid\Uuid;
 use Solinor\PaymentHighway\Tests\TestBase;
 
 class FormBuilderTest extends TestBase
@@ -76,6 +77,32 @@ class FormBuilderTest extends TestBase
     }
 
     /**
+     * @dataProvider payWithCvcAndTokenParameters
+     * @test
+     */
+    public function payWithCvcAndToken($method, $signatureKeyId, $signatureSecret,
+                                       $account, $merchant, $baseUrl,
+                                       $successUrl, $failureUrl, $cancelUrl,
+                                       $language, $tokenId, $amount,
+                                       $currency, $orderId, $description
+    )
+    {
+        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+            $method, $signatureKeyId, $signatureSecret, $account,
+            $merchant, $baseUrl, $successUrl, $failureUrl,
+            $cancelUrl, $language
+        );
+
+        $form = $formbuilder->generatePayWithTokenAndCvcParameters($tokenId, $amount, $currency, $orderId, $description);
+
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/pay_with_token_and_cvc', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
+        $this->assertCount(13, $form->getParameters());
+        $this->assertArrayHasKey('sph-token', $form->getParameters());
+    }
+
+    /**
      * @return array
      */
     public function addPaymentCardParameters()
@@ -113,6 +140,32 @@ class FormBuilderTest extends TestBase
                 'https://example.com/failure',
                 'https://example.com/cancel',
                 'FI',
+                '100',
+                'EUR',
+                '123',
+                'testitilaus'
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function payWithCvcAndTokenParameters()
+    {
+        return array(
+            array(
+                'POST',
+                'testKey',
+                'testSecret',
+                'test',
+                'test_merchantId',
+                'https://v1-hub-staging.sph-test-solinor.com',
+                'https://example.com/success',
+                'https://example.com/failure',
+                'https://example.com/cancel',
+                'FI',
+                Uuid::uuid4()->toString(),
                 '100',
                 'EUR',
                 '123',

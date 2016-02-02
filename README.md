@@ -9,7 +9,7 @@
 
 add following to composer
 
-```
+```json
     "require" : 
     {
         "solinor/paymenthighwayio" : "dev-develop@dev"

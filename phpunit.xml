@@ -1,0 +1,16 @@
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+    convertErrorsToExceptions="false"
+    convertNoticesToExceptions="false"
+    convertWarningsToExceptions="false"
+    colors="true"
+    verbose="true">
+
+    <testsuites>
+        <testsuite name="PaymentHighway Test Suite">
+            <directory>tests/unit</directory>
+        </testsuite>
+    </testsuites>
+
+</phpunit>

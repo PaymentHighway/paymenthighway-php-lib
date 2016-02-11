@@ -2,6 +2,8 @@
   "name": "solinor/paymenthighwayio",
   "description": "Paymenthighway SDK",
   "type": "library",
+  "homepage" : "https://paymenthighway.fi/dev/",
+  "licence" : "MIT",
   "authors" : [
     {
       "name" : "Jonni Larjomaa",

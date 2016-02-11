@@ -116,7 +116,7 @@ throw new Exception("Invalid signature!");
 }
 ```
 
-- `PaymentApi`
+## PaymentApi
 
 In order to do safe transactions, an execution model is used where the first call to /transaction acquires a financial transaction handle, later referred as “ID”, which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the `PaymentAPI->statusTransaction( $transactionId )` request. 
 

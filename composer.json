@@ -3,7 +3,7 @@
   "description": "Paymenthighway SDK",
   "type": "library",
   "homepage" : "https://paymenthighway.fi/dev/",
-  "licence" : "MIT",
+  "license" : "MIT",
   "authors" : [
     {
       "name" : "Jonni Larjomaa",

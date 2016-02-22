@@ -67,10 +67,10 @@ For all Form objects returned by FormBuilder methods
 // read form parameters
 $httpMethod = $form->getMethod();
 $actionUrl = $form->getAction();
-$fields = $form->getFields(); 
+$parameters = $form->getParameters(); 
 
-// Header fields as key => value array
-foreach ($fields as $key => $value) {
+// Header parameters as key => value array
+foreach ($parameters as $key => $value) {
 	echo $key .":". $value;
 }
 ```

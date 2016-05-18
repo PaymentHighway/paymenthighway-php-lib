@@ -141,7 +141,7 @@ $transactionId = ""; // get sph-transaction-id as a GET parameter
 $amount = "1999";
 $currency = "EUR";
 
-$response = $paymentApi->commitTransaction($transactionId, $amount, $currency); //response is pure json run through json_decode();
+$response = $paymentApi->commitFormTransaction($transactionId, $amount, $currency); //response is pure json run through json_decode();
 ```
 
 Example Init transaction

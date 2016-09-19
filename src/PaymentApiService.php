@@ -3,16 +3,16 @@
 use Httpful\Request;
 use Httpful\Response;
 use Solinor\PaymentHighway\Model\Request\Transaction;
-use Solinor\PaymentHighway\Model\Security\SecureSigner;
+use Solinor\PaymentHighway\Security\SecureSigner;
 use Respect\Validation\Validator;
 
 /**
- * Class PaymentApi
+ * Class PaymentApiService
  *
  * @package Solinor\PaymentHighway
  */
 
-class PaymentApi
+class PaymentApiService
 {
     /* Payment API headers */
     static $USER_AGENT = "PaymentHighway Php Library";

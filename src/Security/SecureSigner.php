@@ -1,4 +1,4 @@
-<?php namespace Solinor\PaymentHighway\Model\Security;
+<?php namespace Solinor\PaymentHighway\Security;
 
 /**
  * Class SecureSigner
@@ -52,7 +52,6 @@ class SecureSigner {
      */
     private function sign( $data )
     {
-
         return hash_hmac('sha256', $data, $this->secretKey);
     }
 

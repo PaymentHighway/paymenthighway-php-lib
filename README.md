@@ -38,7 +38,7 @@ Initializing the builder
 
 ```php
 
-use \Solinor\PaymentHighway\FormAPIService
+use \Solinor\PaymentHighway\FormBuilder
 
 $method = "POST";
 $signatureKeyId = "testKey";
@@ -51,7 +51,7 @@ $failureUrl = "https://example.com/failure";
 $cancelUrl = "https://example.com/cancel";
 $language = "EN";
 
-$formBuilder = new FormAPIService($method, $signatureKeyId, $signatureSecret, $account,
+$formBuilder = new FormBuilder($method, $signatureKeyId, $signatureSecret, $account,
                               $merchant, $baseUrl, $successUrl, $failureUrl,
                               $cancelUrl, $language);
 ```
@@ -62,7 +62,7 @@ Example generateAddCardParameters
 $form = $formBuilder->generateAddCardParameters($accept_cvc_required = false);
 ```
 
-For all Form objects returned by FormAPIService methods
+For all Form objects returned by FormBuilder methods
 ```php
 // read form parameters
 $httpMethod = $form->getMethod();
@@ -103,7 +103,7 @@ In order to charge a card given in the Form API, the corresponding transaction i
 
 In addition, after the user is redirected to one of your provided success, failure or cancel URLs, you should validate the request parameters and the signature.
 
-Example validateFormRedirect (NOT IMPLEMENTED YET!)
+Example validateFormRedirect
 
 ```php
 
@@ -111,20 +111,24 @@ use Solinor\PaymentHighway\Model\Security\SecureSigner
 
 $secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
 
-if ( ! $secureSigner->validateFormRedirect(requestParams)) {
-    throw new Exception("Invalid signature!");
+try{
+    $secureSigner->validateFormRedirect($params)) { // request params as [ key => value] array
+}
+catch(Exception $e) {
+    // Validation failed, handle here
 }
 ```
 
-## PaymentApiService
+## PaymentApi
 
 In order to do safe transactions, an execution model is used where the first call to /transaction acquires a financial transaction handle, later referred as “ID”, which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the `PaymentAPI->statusTransaction( $transactionId )` request. 
 
 In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must be used to get the actual card token. 
 
 Initializing the Payment API
+
 ```php
-use Solinor\PaymentHighway\PaymentApiService
+use Solinor\PaymentHighway\PaymentApi
 
 $serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
 $signatureKeyId = "testKey";
@@ -132,7 +136,7 @@ $signatureSecret = "testSecret";
 $account = "test";
 $merchant = "test_merchantId";
 
-$paymentApi = new PaymentApiService($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant);
+$paymentApi = new PaymentApi($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant);
 ```
         
 Example Commit Form Transaction

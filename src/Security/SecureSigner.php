@@ -1,4 +1,5 @@
 <?php namespace Solinor\PaymentHighway\Security;
+use Solinor\PaymentHighway\PaymentHighwayUtility;
 
 /**
  * Class SecureSigner
@@ -26,6 +27,7 @@ class SecureSigner {
      * @param string $method
      * @param string $uri
      * @param array $nameValuePairs
+     * @param string $body
      * @return string
      */
     public function createSignature($method, $uri, array $nameValuePairs, $body = "")
@@ -44,6 +46,37 @@ class SecureSigner {
                 )
             )
         );
+    }
+
+    /**
+     * @param array $params either headers or request params in format [ key => value ]
+     * @throws Exception
+     */
+    public function validateFormRedirect(array $params ) {
+        $this->validateSignature("GET", "", $params);
+    }
+
+    /**
+     * @param $method
+     * @param $uri
+     * @param array $nameValuePairs either headers or request params in format [ key => value ]
+     * @param string $body
+     * @throws Exception
+     */
+    public function validateSignature($method, $uri, array $nameValuePairs, $body = "") {
+
+        $expectedSignature = $nameValuePairs["signature"];
+
+        $actualSignature = $this->createSignature(
+            $method,
+            $uri,
+            PaymentHighwayUtility::parseSphParameters($nameValuePairs),
+            $body
+        );
+
+        if($expectedSignature != $actualSignature) {
+            throw new Exception("Response signature mismatch!");
+        }
     }
 
     /**

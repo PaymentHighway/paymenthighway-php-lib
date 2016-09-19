@@ -103,7 +103,7 @@ In order to charge a card given in the Form API, the corresponding transaction i
 
 In addition, after the user is redirected to one of your provided success, failure or cancel URLs, you should validate the request parameters and the signature.
 
-Example validateFormRedirect (NOT IMPLEMENTED YET!)
+Example validateFormRedirect
 
 ```php
 
@@ -111,8 +111,11 @@ use Solinor\PaymentHighway\Model\Security\SecureSigner
 
 $secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
 
-if ( ! secureSigner->validateFormRedirect(requestParams)) {
-throw new Exception("Invalid signature!");
+try{
+    $secureSigner->validateFormRedirect($params)) { // request params as [ key => value] array
+}
+catch(Exception $e) {
+    // Validation failed, handle here
 }
 ```
 
@@ -123,6 +126,7 @@ In order to do safe transactions, an execution model is used where the first cal
 In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must be used to get the actual card token. 
 
 Initializing the Payment API
+
 ```php
 use Solinor\PaymentHighway\PaymentApi
 
@@ -132,16 +136,18 @@ $signatureSecret = "testSecret";
 $account = "test";
 $merchant = "test_merchantId";
 
-$paymentApi = new PaymentApi($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant)
+$paymentApi = new PaymentApi($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant);
 ```
         
 Example Commit Form Transaction
 ```php
-$transactionId = ""; // get sph-transaction-id as a GET parameter
-$amount = "1999";
+$transactionId = 54321; // get sph-transaction-id as a GET parameter
+$amount = 1999;
 $currency = "EUR";
 
-$response = $paymentApi->commitFormTransaction($transactionId, $amount, $currency); //response is pure json run through json_decode();
+$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $amount, $currency );
+
+$response = $paymentApi->commitTransaction($transactionId, $transaction ); //response is pure json run through json_decode();
 ```
 
 Example Init transaction
@@ -158,7 +164,7 @@ Example Debit with Token
 ```php
 $token = new \Solinor\PaymentHighway\Model\Token( $tokenId );
 
-$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $token, $amount, $currency);
+$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $amount, $currency, $token );
 
 $response = $paymentApi->debitTransaction( $transactionId, $transaction);
 ```

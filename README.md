@@ -150,14 +150,14 @@ $transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $amount, $
 $response = $paymentApi->commitTransaction($transactionId, $transaction ); //response is pure json run through json_decode();
 ```
 
-Example Init transaction
-```php
-$response = $paymentApi->initTransaction();
-```
-
 Example Tokenize (get the actual card token by using token id)
 ```php
 $response = $paymentApi->tokenize( $tokenizationId );
+```
+
+Example Init transaction
+```php
+$response = $paymentApi->initTransaction();
 ```
 
 Example Debit with Token

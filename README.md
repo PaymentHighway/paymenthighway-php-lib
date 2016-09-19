@@ -38,7 +38,7 @@ Initializing the builder
 
 ```php
 
-use \Solinor\PaymentHighway\FormBuilder
+use \Solinor\PaymentHighway\FormAPIService
 
 $method = "POST";
 $signatureKeyId = "testKey";
@@ -51,7 +51,7 @@ $failureUrl = "https://example.com/failure";
 $cancelUrl = "https://example.com/cancel";
 $language = "EN";
 
-$formBuilder = new FormBuilder($method, $signatureKeyId, $signatureSecret, $account,
+$formBuilder = new FormAPIService($method, $signatureKeyId, $signatureSecret, $account,
                               $merchant, $baseUrl, $successUrl, $failureUrl,
                               $cancelUrl, $language);
 ```
@@ -62,7 +62,7 @@ Example generateAddCardParameters
 $form = $formBuilder->generateAddCardParameters($accept_cvc_required = false);
 ```
 
-For all Form objects returned by FormBuilder methods
+For all Form objects returned by FormAPIService methods
 ```php
 // read form parameters
 $httpMethod = $form->getMethod();
@@ -111,12 +111,12 @@ use Solinor\PaymentHighway\Model\Security\SecureSigner
 
 $secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
 
-if ( ! secureSigner->validateFormRedirect(requestParams)) {
-throw new Exception("Invalid signature!");
+if ( ! $secureSigner->validateFormRedirect(requestParams)) {
+    throw new Exception("Invalid signature!");
 }
 ```
 
-## PaymentApi
+## PaymentApiService
 
 In order to do safe transactions, an execution model is used where the first call to /transaction acquires a financial transaction handle, later referred as “ID”, which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the `PaymentAPI->statusTransaction( $transactionId )` request. 
 
@@ -124,7 +124,7 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 
 Initializing the Payment API
 ```php
-use Solinor\PaymentHighway\PaymentApi
+use Solinor\PaymentHighway\PaymentApiService
 
 $serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
 $signatureKeyId = "testKey";
@@ -132,16 +132,18 @@ $signatureSecret = "testSecret";
 $account = "test";
 $merchant = "test_merchantId";
 
-$paymentApi = new PaymentApi($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant)
+$paymentApi = new PaymentApiService($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant);
 ```
         
 Example Commit Form Transaction
 ```php
-$transactionId = ""; // get sph-transaction-id as a GET parameter
-$amount = "1999";
+$transactionId = 54321; // get sph-transaction-id as a GET parameter
+$amount = 1999;
 $currency = "EUR";
 
-$response = $paymentApi->commitFormTransaction($transactionId, $amount, $currency); //response is pure json run through json_decode();
+$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $amount, $currency );
+
+$response = $paymentApi->commitTransaction($transactionId, $transaction ); //response is pure json run through json_decode();
 ```
 
 Example Init transaction
@@ -158,7 +160,7 @@ Example Debit with Token
 ```php
 $token = new \Solinor\PaymentHighway\Model\Token( $tokenId );
 
-$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $token, $amount, $currency);
+$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $amount, $currency, $token );
 
 $response = $paymentApi->debitTransaction( $transactionId, $transaction);
 ```

@@ -18,14 +18,14 @@ class Transaction implements \JsonSerializable
     public $card = null;
 
     /**
-     * @param Card|Token $request
      * @param int $amount
      * @param string $currency
+     * @param Card|Token $request
      * @param bool $blocking
      * @param string $orderId
      * @throws Exception
      */
-    public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null )
+    public function __construct( $amount, $currency, $request = null, $blocking = true, $orderId = null )
     {
         $this->amount = $amount;
         $this->currency = $currency;
@@ -37,7 +37,6 @@ class Transaction implements \JsonSerializable
 
     /**
      * @param $request
-     * @throws Exception
      */
     private function setRequestByType( $request )
     {
@@ -46,9 +45,6 @@ class Transaction implements \JsonSerializable
         }
         elseif( $request instanceof Card ){
             $this->card = $request;
-        }
-        else{
-            throw new Exception("Invalid request object type must be type of Card or Token");
         }
     }
 

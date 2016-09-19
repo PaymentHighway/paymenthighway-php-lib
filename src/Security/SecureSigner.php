@@ -1,4 +1,6 @@
 <?php namespace Solinor\PaymentHighway\Security;
+
+use Exception;
 use Solinor\PaymentHighway\PaymentHighwayUtility;
 
 /**
@@ -52,7 +54,8 @@ class SecureSigner {
      * @param array $params either headers or request params in format [ key => value ]
      * @throws Exception
      */
-    public function validateFormRedirect(array $params ) {
+    public function validateFormRedirect(array $params )
+    {
         $this->validateSignature("GET", "", $params);
     }
 
@@ -63,7 +66,8 @@ class SecureSigner {
      * @param string $body
      * @throws Exception
      */
-    public function validateSignature($method, $uri, array $nameValuePairs, $body = "") {
+    public function validateSignature($method, $uri, array $nameValuePairs, $body = "")
+    {
 
         $expectedSignature = $nameValuePairs["signature"];
 
@@ -87,7 +91,6 @@ class SecureSigner {
     {
         return hash_hmac('sha256', $data, $this->secretKey);
     }
-
 
     /**
      * @param array $parameters

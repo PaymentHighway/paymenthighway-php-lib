@@ -26,6 +26,48 @@ class SecureSignerTest extends TestBase
     }
 
     /**
+     * @expectedExceptionMessage Response signature mismatch!
+     * @expectedException \Exception
+     * @test
+     */
+    public function SignerVerifierThrowsExceptionOnFalseData()
+    {
+        $params = array(
+            'signature' => 'somefalsesign',
+            'sph-testi1' => 'arvo1',
+            'sph-testi2' => 'arvo2',
+            'sph-testi3' => 'arvo3',
+            'sph-testi4' => 'arvo4',
+        );
+
+
+        $signer = new SecureSigner(self::$KEYID, self::$KEY);
+        $signer->validateFormRedirect($params);
+    }
+
+    /**
+     * @test
+     */
+    public function SignerVerifierDoesNotThrowExceptionOnSuccess()
+    {
+        $params = array(
+            'sph-testi1' => 'arvo1',
+            'sph-testi2' => 'arvo2',
+            'sph-testi3' => 'arvo3',
+            'sph-testi4' => 'arvo4',
+        );
+
+        $signer = new SecureSigner(self::$KEYID, self::$KEY);
+        $valid = $signer->createSignature("GET", "", $params, "");
+
+        $this->assertRegExp('/^SPH1 \w+ [0-9a-z]+/', $valid);
+
+        $params["signature"] = $valid;
+
+        $signer->validateFormRedirect($params);
+    }
+
+    /**
      * @return array
      */
     public function provider()

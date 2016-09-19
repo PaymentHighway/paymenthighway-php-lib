@@ -7,13 +7,12 @@ use Solinor\PaymentHighway\Security\SecureSigner;
 use Respect\Validation\Validator;
 
 /**
- * Class PaymentApiService
+ * Class PaymentApi
  *
  * @package Solinor\PaymentHighway
  */
 
-class PaymentApiService
-{
+class PaymentApi {
     /* Payment API headers */
     static $USER_AGENT = "PaymentHighway Php Library";
     static $METHOD_POST = "POST";

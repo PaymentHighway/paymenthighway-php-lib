@@ -2,7 +2,7 @@
 
 use Solinor\PaymentHighway\Model\Card;
 use Solinor\PaymentHighway\Model\Request\Transaction;
-use Solinor\PaymentHighway\PaymentApiService;
+use Solinor\PaymentHighway\PaymentApi;
 use Solinor\PaymentHighway\Tests\TestBase;
 
 class PaymentApiTest extends TestBase
@@ -30,13 +30,13 @@ class PaymentApiTest extends TestBase
 
     /**
      * @test
-     * @return PaymentApiService
+     * @return PaymentApi
      */
     public function paymentApiExists()
     {
-        $api = new PaymentApiService('https://v1-hub-staging.sph-test-solinor.com/',  'testKey',  'testSecret',  'test',  'test_merchantId');
+        $api = new PaymentApi('https://v1-hub-staging.sph-test-solinor.com/',  'testKey',  'testSecret',  'test',  'test_merchantId');
 
-        $this->assertInstanceOf('Solinor\PaymentHighway\PaymentApiService',$api);
+        $this->assertInstanceOf('Solinor\PaymentHighway\PaymentApi',$api);
 
         return $api;
     }
@@ -46,10 +46,10 @@ class PaymentApiTest extends TestBase
      * @depends paymentApiExists
      * @test
      *
-     * @param PaymentApiService $api
+     * @param PaymentApi $api
      * @return string
      */
-    public function initHandlerSuccessfully( PaymentApiService $api )
+    public function initHandlerSuccessfully( PaymentApi $api )
     {
 
         $jsonresponse = $api->initTransaction()->body;
@@ -65,11 +65,11 @@ class PaymentApiTest extends TestBase
      * @depends      paymentApiExists
      * @depends      initHandlerSuccessfully
      * @test
-     * @param PaymentApiService $api
+     * @param PaymentApi $api
      * @param string $transactionId
      * @return string transactionId
      */
-    public function debitTransactionSuccess(PaymentApiService $api, $transactionId )
+    public function debitTransactionSuccess(PaymentApi $api, $transactionId )
     {
 
         $card = $this->getValidCard();
@@ -87,9 +87,9 @@ class PaymentApiTest extends TestBase
      * @depends     paymentApiExists
      * @depends     debitTransactionSuccess
      *
-     * @param PaymentApiService $api
+     * @param PaymentApi $api
      */
-    public function searchByOrderIdSuccess(PaymentApiService $api){
+    public function searchByOrderIdSuccess(PaymentApi $api){
 
         $response = $api->searchByOrderId(self::$orderId)->body;
 
@@ -103,10 +103,10 @@ class PaymentApiTest extends TestBase
      * @depends      paymentApiExists
      * @depends      debitTransactionSuccess
      * @test
-     * @param PaymentApiService $api
+     * @param PaymentApi $api
      * @param string $transactionId
      */
-    public function transactionStatusAfterDebit(PaymentApiService $api, $transactionId)
+    public function transactionStatusAfterDebit(PaymentApi $api, $transactionId)
     {
         $response = $api->statusTransaction($transactionId)->body;
 
@@ -120,10 +120,10 @@ class PaymentApiTest extends TestBase
      * @depends debitTransactionSuccess
      * @test
      *
-     * @param PaymentApiService $api
+     * @param PaymentApi $api
      * @param $transactionId
      */
-    public function revertTransactionSuccess(PaymentApiService $api, $transactionId)
+    public function revertTransactionSuccess(PaymentApi $api, $transactionId)
     {
         $response = $api->revertTransaction($transactionId, 99)->body;
 
@@ -137,10 +137,10 @@ class PaymentApiTest extends TestBase
      * @depends      paymentApiExists
      * @depends      revertTransactionSuccess
      * @test
-     * @param PaymentApiService $api
+     * @param PaymentApi $api
      * @param string $transactionId
      */
-    public function transactionStatusAfterRevert(PaymentApiService $api, $transactionId)
+    public function transactionStatusAfterRevert(PaymentApi $api, $transactionId)
     {
         $response = $api->statusTransaction($transactionId)->body;
 
@@ -153,7 +153,7 @@ class PaymentApiTest extends TestBase
      * @test
      * @depends paymentApiExists
      */
-    public function getReportSuccess( PaymentApiService $api )
+    public function getReportSuccess( PaymentApi $api )
     {
         $date = date('Ymd');
 

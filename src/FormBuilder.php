@@ -4,7 +4,7 @@
 use Solinor\PaymentHighway\Model\Form;
 use Solinor\PaymentHighway\Security\SecureSigner;
 
-class FormAPIService {
+class FormBuilder {
 
     static $METHOD_POST = "POST";
     static $SPH_ACCOUNT = "sph-account";

@@ -19,7 +19,7 @@ class TokenTest extends TestBase
 
         $token = new Token('sometestid');
 
-        $request = new Transaction($token, 99 , 'EUR');
+        $request = new Transaction(99 , 'EUR', $token );
 
         $this->assertEquals($expectedJson, json_encode($request));
 

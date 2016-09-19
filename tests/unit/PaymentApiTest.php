@@ -2,7 +2,7 @@
 
 use Solinor\PaymentHighway\Model\Card;
 use Solinor\PaymentHighway\Model\Request\Transaction;
-use Solinor\PaymentHighway\PaymentApi;
+use Solinor\PaymentHighway\PaymentApiService;
 use Solinor\PaymentHighway\Tests\TestBase;
 
 class PaymentApiTest extends TestBase
@@ -30,13 +30,13 @@ class PaymentApiTest extends TestBase
 
     /**
      * @test
-     * @return PaymentApi
+     * @return PaymentApiService
      */
     public function paymentApiExists()
     {
-        $api = new PaymentApi('https://v1-hub-staging.sph-test-solinor.com/',  'testKey',  'testSecret',  'test',  'test_merchantId');
+        $api = new PaymentApiService('https://v1-hub-staging.sph-test-solinor.com/',  'testKey',  'testSecret',  'test',  'test_merchantId');
 
-        $this->assertInstanceOf('Solinor\PaymentHighway\PaymentApi',$api);
+        $this->assertInstanceOf('Solinor\PaymentHighway\PaymentApiService',$api);
 
         return $api;
     }
@@ -46,10 +46,10 @@ class PaymentApiTest extends TestBase
      * @depends paymentApiExists
      * @test
      *
-     * @param PaymentApi $api
+     * @param PaymentApiService $api
      * @return string
      */
-    public function initHandlerSuccessfully( PaymentApi $api )
+    public function initHandlerSuccessfully( PaymentApiService $api )
     {
 
         $jsonresponse = $api->initTransaction()->body;
@@ -65,11 +65,11 @@ class PaymentApiTest extends TestBase
      * @depends      paymentApiExists
      * @depends      initHandlerSuccessfully
      * @test
-     * @param PaymentApi $api
+     * @param PaymentApiService $api
      * @param string $transactionId
      * @return string transactionId
      */
-    public function debitTransactionSuccess(PaymentApi $api, $transactionId )
+    public function debitTransactionSuccess(PaymentApiService $api, $transactionId )
     {
 
         $card = $this->getValidCard();
@@ -87,9 +87,9 @@ class PaymentApiTest extends TestBase
      * @depends     paymentApiExists
      * @depends     debitTransactionSuccess
      *
-     * @param PaymentApi $api
+     * @param PaymentApiService $api
      */
-    public function searchByOrderIdSuccess(PaymentApi $api){
+    public function searchByOrderIdSuccess(PaymentApiService $api){
 
         $response = $api->searchByOrderId(self::$orderId)->body;
 
@@ -103,10 +103,10 @@ class PaymentApiTest extends TestBase
      * @depends      paymentApiExists
      * @depends      debitTransactionSuccess
      * @test
-     * @param PaymentApi $api
+     * @param PaymentApiService $api
      * @param string $transactionId
      */
-    public function transactionStatusAfterDebit(PaymentApi $api, $transactionId)
+    public function transactionStatusAfterDebit(PaymentApiService $api, $transactionId)
     {
         $response = $api->statusTransaction($transactionId)->body;
 
@@ -120,10 +120,10 @@ class PaymentApiTest extends TestBase
      * @depends debitTransactionSuccess
      * @test
      *
-     * @param PaymentApi $api
+     * @param PaymentApiService $api
      * @param $transactionId
      */
-    public function revertTransactionSuccess(PaymentApi $api, $transactionId)
+    public function revertTransactionSuccess(PaymentApiService $api, $transactionId)
     {
         $response = $api->revertTransaction($transactionId, 99)->body;
 
@@ -137,10 +137,10 @@ class PaymentApiTest extends TestBase
      * @depends      paymentApiExists
      * @depends      revertTransactionSuccess
      * @test
-     * @param PaymentApi $api
+     * @param PaymentApiService $api
      * @param string $transactionId
      */
-    public function transactionStatusAfterRevert(PaymentApi $api, $transactionId)
+    public function transactionStatusAfterRevert(PaymentApiService $api, $transactionId)
     {
         $response = $api->statusTransaction($transactionId)->body;
 
@@ -153,7 +153,7 @@ class PaymentApiTest extends TestBase
      * @test
      * @depends paymentApiExists
      */
-    public function getReportSuccess( PaymentApi $api )
+    public function getReportSuccess( PaymentApiService $api )
     {
         $date = date('Ymd');
 
@@ -170,14 +170,14 @@ class PaymentApiTest extends TestBase
     private function getValidCard()
     {
         return new Transaction(
+            99,
+            'EUR',
             new Card(
                 self::ValidPan,
                 self::ValidExpiryYear,
                 self::ValidExpiryMonth,
                 self::ValidCvc
             ),
-            99,
-            'EUR',
             true,
             self::$orderId
         );

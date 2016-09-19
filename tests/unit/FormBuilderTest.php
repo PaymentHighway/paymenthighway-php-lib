@@ -15,7 +15,7 @@ class FormBuilderTest extends TestBase
                                               $cancelUrl, $language
     )
     {
-        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+        $formbuilder = new \Solinor\PaymentHighway\FormAPIService(
             $method, $signatureKeyId, $signatureSecret, $account,
             $merchant, $baseUrl, $successUrl, $failureUrl,
             $cancelUrl, $language
@@ -39,7 +39,7 @@ class FormBuilderTest extends TestBase
                                       $cancelUrl, $language, $amount, $currency, $orderId, $description
     )
     {
-        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+        $formbuilder = new \Solinor\PaymentHighway\FormAPIService(
             $method, $signatureKeyId, $signatureSecret, $account,
             $merchant, $baseUrl, $successUrl, $failureUrl,
             $cancelUrl, $language
@@ -62,7 +62,7 @@ class FormBuilderTest extends TestBase
                                       $cancelUrl, $language, $amount, $currency, $orderId, $description
     )
     {
-        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+        $formbuilder = new \Solinor\PaymentHighway\FormAPIService(
             $method, $signatureKeyId, $signatureSecret, $account,
             $merchant, $baseUrl, $successUrl, $failureUrl,
             $cancelUrl, $language
@@ -87,7 +87,7 @@ class FormBuilderTest extends TestBase
                                        $currency, $orderId, $description
     )
     {
-        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+        $formbuilder = new \Solinor\PaymentHighway\FormAPIService(
             $method, $signatureKeyId, $signatureSecret, $account,
             $merchant, $baseUrl, $successUrl, $failureUrl,
             $cancelUrl, $language

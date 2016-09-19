@@ -1,6 +1,6 @@
 <?php namespace Solinor\PaymentHighway\Tests\Unit\Model;
 
-use \Solinor\PaymentHighway\Model\Security\SecureSigner;
+use \Solinor\PaymentHighway\Security\SecureSigner;
 use Solinor\PaymentHighway\Tests\TestBase;
 
 /**

@@ -112,7 +112,7 @@ use Solinor\PaymentHighway\Model\Security\SecureSigner
 $secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
 
 try{
-    $secureSigner->validateFormRedirect($params)) { // request params as [ key => value] array
+    $secureSigner->validateFormRedirect($params)) { // redirected get params as [ key => value] array
 }
 catch(Exception $e) {
     // Validation failed, handle here
@@ -141,7 +141,7 @@ $paymentApi = new PaymentApi($serviceUrl, $signatureKeyId, $signatureSecret, $ac
         
 Example Commit Form Transaction
 ```php
-$transactionId = 54321; // get sph-transaction-id as a GET parameter
+$transactionId = "f23a9be0-15fe-43df-98ac-92f6a5731c3b"; // get sph-transaction-id as a GET parameter
 $amount = 1999;
 $currency = "EUR";
 

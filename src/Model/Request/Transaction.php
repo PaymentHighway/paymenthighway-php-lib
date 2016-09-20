@@ -2,6 +2,7 @@
 
 use Solinor\PaymentHighway\Model\Token;
 use Solinor\PaymentHighway\Model\Card;
+
 /**
  * Class Transaction
  * @package Solinor\PaymentHighway\Model\Request
@@ -11,7 +12,7 @@ class Transaction implements \JsonSerializable
 {
     public $amount = null;
     public $currency = null;
-    public $orderId = null;
+    public $order = null;
     public $blocking = true;
 
     public $token = null;
@@ -20,16 +21,16 @@ class Transaction implements \JsonSerializable
     /**
      * @param int $amount
      * @param string $currency
-     * @param Card|Token $request
+     * @param Card|Token|null $request
      * @param bool $blocking
      * @param string $orderId
      * @throws Exception
      */
-    public function __construct( $amount, $currency, $request = null, $blocking = true, $orderId = null )
+    public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null )
     {
         $this->amount = $amount;
         $this->currency = $currency;
-        $this->orderId = $orderId;
+        $this->order = $orderId;
         $this->blocking = $blocking;
 
         $this->setRequestByType($request);

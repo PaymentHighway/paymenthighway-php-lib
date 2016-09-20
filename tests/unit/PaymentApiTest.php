@@ -118,6 +118,7 @@ class PaymentApiTest extends TestBase
     /**
      * @depends paymentApiExists
      * @depends debitTransactionSuccess
+     * @depends transactionStatusAfterDebit
      * @test
      *
      * @param PaymentApi $api
@@ -170,14 +171,14 @@ class PaymentApiTest extends TestBase
     private function getValidCard()
     {
         return new Transaction(
-            99,
-            'EUR',
             new Card(
                 self::ValidPan,
                 self::ValidExpiryYear,
                 self::ValidExpiryMonth,
                 self::ValidCvc
             ),
+            99,
+            'EUR',
             true,
             self::$orderId
         );

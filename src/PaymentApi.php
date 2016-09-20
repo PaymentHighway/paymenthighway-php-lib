@@ -92,18 +92,19 @@ class PaymentApi {
 
     /**
      * @param string|UUID $transactionId
-     * @param Transaction $transaction
+     * @param $amount
+     * @param $currency
      * @return Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function commitFormTransaction( $transactionId, Transaction $transaction )
+    public function commitFormTransaction( $transactionId, $amount, $currency )
     {
         $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction/'. $transactionId .'/commit';
 
         ksort($headers);
 
-        $jsonBody = json_encode($transaction);
+        $jsonBody = json_encode(new Transaction(null, $amount, $currency));
 
         $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
 
@@ -225,7 +226,6 @@ class PaymentApi {
         if(Validator::date("Y-m-d'T'HH:mm:ss'Z'")->notEmpty()->validate($endDate)){
             $uri += '&end-date='.urlencode($limit);
         }
-
 
         ksort($headers);
 

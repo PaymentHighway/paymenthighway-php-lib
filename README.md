@@ -145,9 +145,7 @@ $transactionId = "f23a9be0-15fe-43df-98ac-92f6a5731c3b"; // get sph-transaction-
 $amount = 1999;
 $currency = "EUR";
 
-$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $amount, $currency );
-
-$response = $paymentApi->commitTransaction($transactionId, $transaction ); //response is pure json run through json_decode();
+$response = $paymentApi->commitFormTransaction($transactionId, $amount, $currency ); //response is pure json run through json_decode();
 ```
 
 Example Tokenize (get the actual card token by using token id)

@@ -55,7 +55,7 @@ class PaymentApi {
      * @param string $merchant
      * @param string $apiversion
      */
-    public function __construct( $serviceUrl,  $signatureKeyId,  $signatureSecret,  $account,  $merchant, $apiversion = "20150605")
+    public function __construct( $serviceUrl,  $signatureKeyId,  $signatureSecret,  $account,  $merchant, $apiversion = "20160630")
     {
         $this->serviceUrl = $serviceUrl;
         $this->signatureKeyId = $signatureKeyId;
@@ -209,7 +209,7 @@ class PaymentApi {
      * @param int $limit between 1 and 100
      * @param string $startDate acceptable format yyyy-MM-dd'T'HH:mm:ss'Z'
      * @param string $endDate acceptable format yyyy-MM-dd'T'HH:mm:ss'Z'
-     * @return \Httpful\associative|string
+     * @return \Httpful\Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function searchByOrderId( $orderId, $limit = null, $startDate = null , $endDate = null )
@@ -286,6 +286,46 @@ class PaymentApi {
             ->send();
 
         return $response;
+    }
+
+
+    /**
+     * @param string $date in format yyyyMMdd. The date to fetch the reconciliation report for. Must be today - 1 day or earlier.
+     * @param bool $useDateProcessed
+     * @return \Httpful\Response
+     */
+    public function fetchReconciliationReport($date, $useDateProcessed)
+    {
+        $headers = $this->createHeaderNameValuePairs();
+
+        $uri = '/report/reconciliation/' . $date . '?use-date-processed=' . $useDateProcessed;
+
+        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        $response = Request::get($this->serviceUrl . $uri)
+            ->addHeaders($headers)
+            ->send();
+
+        return $response;
+    }
+
+    /**
+     * @param string $method
+     * @param string $uri
+     * @param array $keyValues
+     * @param string $content
+     * @return bool
+     */
+    public function validateSignature($method, $uri, $keyValues, $content)
+    {
+        if(!array_key_exists('signature', $keyValues))
+            return false;
+        $receivedSignature = $keyValues['signature'];
+        $createdSignature = $this.createSignature($method, $uri, $keyValues, $content);
+        return $receivedSignature === $createdSignature;
     }
 
     /**

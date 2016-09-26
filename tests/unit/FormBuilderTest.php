@@ -103,6 +103,31 @@ class FormBuilderTest extends TestBase
     }
 
     /**
+     * @dataProvider payWithMobilePayParameters
+     * @test
+     */
+    public function payWithMobilePay($method, $signatureKeyId, $signatureSecret,
+                                       $account, $merchant, $baseUrl,
+                                       $successUrl, $failureUrl, $cancelUrl,
+                                       $language, $amount,
+                                       $currency, $orderId, $description
+    )
+    {
+        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+            $method, $signatureKeyId, $signatureSecret, $account,
+            $merchant, $baseUrl, $successUrl, $failureUrl,
+            $cancelUrl, $language
+        );
+
+        $form = $formbuilder->generatePayWithMobilePayParameters($amount, $currency, $orderId, $description);
+
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/mobilepay', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
+        $this->assertCount(12, $form->getParameters());
+    }
+
+    /**
      * @return array
      */
     public function addPaymentCardParameters()
@@ -166,6 +191,31 @@ class FormBuilderTest extends TestBase
                 'https://example.com/cancel',
                 'FI',
                 Uuid::uuid4()->toString(),
+                '100',
+                'EUR',
+                '123',
+                'testitilaus'
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function payWithMobilePayParameters()
+    {
+        return array(
+            array(
+                'POST',
+                'testKey',
+                'testSecret',
+                'test',
+                'test_merchantId',
+                'https://v1-hub-staging.sph-test-solinor.com',
+                'https://example.com/success',
+                'https://example.com/failure',
+                'https://example.com/cancel',
+                'FI',
                 '100',
                 'EUR',
                 '123',

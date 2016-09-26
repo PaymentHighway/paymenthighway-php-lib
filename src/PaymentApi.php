@@ -11,8 +11,8 @@ use Respect\Validation\Validator;
  *
  * @package Solinor\PaymentHighway
  */
-
-class PaymentApi {
+class PaymentApi
+{
     /* Payment API headers */
     static $USER_AGENT = "PaymentHighway Php Library";
     static $METHOD_POST = "POST";
@@ -55,7 +55,7 @@ class PaymentApi {
      * @param string $merchant
      * @param string $apiversion
      */
-    public function __construct( $serviceUrl,  $signatureKeyId,  $signatureSecret,  $account,  $merchant, $apiversion = "20160630")
+    public function __construct($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant, $apiversion = "20160630")
     {
         $this->serviceUrl = $serviceUrl;
         $this->signatureKeyId = $signatureKeyId;
@@ -73,21 +73,8 @@ class PaymentApi {
      */
     public function initTransaction()
     {
-        $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction';
-
-        ksort($headers);
-
-        $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::post($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->send();
-
-        return $response;
+        return $this->makeRequest(self::$METHOD_POST, $uri);
     }
 
     /**
@@ -97,26 +84,10 @@ class PaymentApi {
      * @return Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function commitFormTransaction( $transactionId, $amount, $currency )
+    public function commitFormTransaction($transactionId, $amount, $currency)
     {
-        $headers = $this->createHeaderNameValuePairs();
-        $uri = '/transaction/'. $transactionId .'/commit';
-
-        ksort($headers);
-
-        $jsonBody = json_encode(new Transaction(null, $amount, $currency));
-
-        $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::post($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->body($jsonBody)
-            ->send();
-
-        return $response;
+        $uri = '/transaction/' . $transactionId . '/commit';
+        return $this->makeRequest(self::$METHOD_POST, $uri, new Transaction(null, $amount, $currency));
     }
 
 
@@ -127,29 +98,11 @@ class PaymentApi {
      * @return Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function debitTransaction( $transactionId, Transaction $transaction )
+    public function debitTransaction($transactionId, Transaction $transaction)
     {
-        $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction/' . $transactionId . '/debit';
-
-        ksort($headers);
-
-        $jsonBody = json_encode($transaction);
-
-        $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::post($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->body($jsonBody)
-            ->send();
-
-        return $response;
-
+        return $this->makeRequest(self::$METHOD_POST, $uri, $transaction);
     }
-
 
 
     /**
@@ -160,24 +113,8 @@ class PaymentApi {
      */
     public function revertTransaction($transactionId, $amount)
     {
-        $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction/' . $transactionId . '/revert';
-
-        ksort($headers);
-
-        $jsonBody = json_encode(array('amount' => $amount));
-
-        $signature = $this->createSecureSign(self::$METHOD_POST, $uri, $headers, $jsonBody);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::post($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->body($jsonBody)
-            ->send();
-
-        return $response;
+        return $this->makeRequest(self::$METHOD_POST, $uri, array('amount' => $amount));
     }
 
     /**
@@ -185,23 +122,10 @@ class PaymentApi {
      * @return \Httpful\Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function statusTransaction( $transactionId )
+    public function statusTransaction($transactionId)
     {
-        $headers = $this->createHeaderNameValuePairs();
         $uri = '/transaction/' . $transactionId;
-
-        ksort($headers);
-
-        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::get($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->send();
-
-        return $response;
+        return $this->makeRequest(self::$METHOD_GET, $uri);
     }
 
     /**
@@ -212,56 +136,31 @@ class PaymentApi {
      * @return \Httpful\Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function searchByOrderId( $orderId, $limit = null, $startDate = null , $endDate = null )
+    public function searchByOrderId($orderId, $limit = null, $startDate = null, $endDate = null)
     {
-        $headers = $this->createHeaderNameValuePairs();
         $uri = '/transactions?order=' . $orderId;
 
-        if(Validator::intVal()->max(100, true)->notEmpty()->validate($limit)){
-            $uri += '&limit='.$limit;
+        if (Validator::intVal()->max(100, true)->notEmpty()->validate($limit)) {
+            $uri .= '&limit=' . $limit;
         }
-        if(Validator::date("Y-m-d'T'HH:mm:ss'Z'")->notEmpty()->validate($startDate)){
-            $uri += '&start-date='.urlencode($startDate);
+        if (Validator::date("Y-m-d'T'HH:mm:ss'Z'")->notEmpty()->validate($startDate)) {
+            $uri .= '&start-date=' . urlencode($startDate);
         }
-        if(Validator::date("Y-m-d'T'HH:mm:ss'Z'")->notEmpty()->validate($endDate)){
-            $uri += '&end-date='.urlencode($limit);
+        if (Validator::date("Y-m-d'T'HH:mm:ss'Z'")->notEmpty()->validate($endDate)) {
+            $uri .= '&end-date=' . urlencode($limit);
         }
 
-        ksort($headers);
-
-        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::get($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->send();
-
-        return $response;
+        return $this->makeRequest(self::$METHOD_GET, $uri);
     }
 
     /**
      * @param $tokenizeId
      * @return \Httpful\Response
      */
-    public function tokenize( $tokenizeId )
+    public function tokenize($tokenizeId)
     {
-        $headers = $this->createHeaderNameValuePairs();
         $uri = '/tokenization/' . $tokenizeId;
-
-        ksort($headers);
-
-        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::get($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->send();
-
-        return $response;
+        return $this->makeRequest(self::$METHOD_GET, $uri);
     }
 
     /**
@@ -269,23 +168,10 @@ class PaymentApi {
      * @return \Httpful\Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */
-    public function getReport( $date )
+    public function getReport($date)
     {
-        $headers = $this->createHeaderNameValuePairs();
         $uri = '/report/batch/' . $date;
-
-        ksort($headers);
-
-        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::get($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->send();
-
-        return $response;
+        return $this->makeRequest(self::$METHOD_GET, $uri);
     }
 
 
@@ -296,20 +182,8 @@ class PaymentApi {
      */
     public function fetchReconciliationReport($date, $useDateProcessed)
     {
-        $headers = $this->createHeaderNameValuePairs();
-
         $uri = '/report/reconciliation/' . $date . '?use-date-processed=' . $useDateProcessed;
-
-        $signature = $this->createSecureSign(self::$METHOD_GET, $uri, $headers);
-
-        $headers[self::$SIGNATURE] = $signature;
-        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
-
-        $response = Request::get($this->serviceUrl . $uri)
-            ->addHeaders($headers)
-            ->send();
-
-        return $response;
+        return $this->makeRequest(self::$METHOD_GET, $uri);
     }
 
     /**
@@ -321,10 +195,10 @@ class PaymentApi {
      */
     public function validateSignature($method, $uri, $keyValues, $content)
     {
-        if(!array_key_exists('signature', $keyValues))
+        if (!array_key_exists('signature', $keyValues))
             return false;
         $receivedSignature = $keyValues['signature'];
-        $createdSignature = $this.createSignature($method, $uri, $keyValues, $content);
+        $createdSignature = $this . createSignature($method, $uri, $keyValues, $content);
         return $receivedSignature === $createdSignature;
     }
 
@@ -333,7 +207,8 @@ class PaymentApi {
      *
      * @return array
      */
-    private function createHeaderNameValuePairs() {
+    private function createHeaderNameValuePairs()
+    {
 
         $nameValuePairs = array(
             self::$SPH_ACCOUNT => $this->account,
@@ -360,5 +235,34 @@ class PaymentApi {
 
         return $secureSigner->createSignature($method, $uri, $parsedSphParameters, $body);
 
+    }
+
+    /**
+     * @param $method
+     * @param $uri
+     * @param null $body
+     * @return \Httpful\Response
+     */
+    private function makeRequest($method, $uri, $body = null)
+    {
+        $headers = $this->createHeaderNameValuePairs();
+        $jsonBody = '';
+        if ($body)
+            $jsonBody = json_encode($body);
+
+        ksort($headers);
+        $signature = $this->createSecureSign($method, $uri, $headers, $jsonBody);
+
+        $headers[self::$SIGNATURE] = $signature;
+        $headers[self::$CT_HEADER] = self::$CT_HEADER_INFO;
+
+        if ($method === self::$METHOD_POST) {
+            $response = Request::post($this->serviceUrl . $uri)
+                ->body($jsonBody);
+        } else {
+            $response = Request::get($this->serviceUrl . $uri);
+        }
+
+        return $response->addHeaders($headers)->send();
     }
 }

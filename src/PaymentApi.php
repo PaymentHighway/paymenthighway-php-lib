@@ -187,22 +187,6 @@ class PaymentApi
     }
 
     /**
-     * @param string $method
-     * @param string $uri
-     * @param array $keyValues
-     * @param string $content
-     * @return bool
-     */
-    public function validateSignature($method, $uri, $keyValues, $content)
-    {
-        if (!array_key_exists('signature', $keyValues))
-            return false;
-        $receivedSignature = $keyValues['signature'];
-        $createdSignature = $this . createSignature($method, $uri, $keyValues, $content);
-        return $receivedSignature === $createdSignature;
-    }
-
-    /**
      * Create name value pairs
      *
      * @return array

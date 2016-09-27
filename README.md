@@ -97,6 +97,16 @@ $description = "A Box of Dreams. 19,90€";
 $form = formBuilder->generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description);
 ```
 
+Example generatePayWithMobilePayParameters
+```php
+$amount = "1990";
+$currency = "EUR";
+$orderId = "1000123A";
+$description = "A Box of Dreams. 19,90€";
+
+$form = formBuilder->generatePayWithMobilePayParameters($amount, $currency, $orderId, $description);
+```
+
 Each method returns a Form object which provides required hidden fields for the HTML form to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, which are included in the Form fields.
 
 In order to charge a card given in the Form API, the corresponding transaction id must be committed by using Payment API.

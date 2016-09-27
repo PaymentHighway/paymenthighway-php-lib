@@ -176,11 +176,11 @@ class PaymentApi
 
 
     /**
-     * @param string $date in format yyyyMMdd. The date to fetch the reconciliation report for. Must be today - 1 day or earlier.
+     * @param string $date in format yyyyMMdd. Use the acquirer processed date instead of report received date. Might cause changes to the past
      * @param bool $useDateProcessed
      * @return \Httpful\Response
      */
-    public function fetchReconciliationReport($date, $useDateProcessed)
+    public function fetchReconciliationReport($date, $useDateProcessed = false)
     {
         $uri = '/report/reconciliation/' . $date . '?use-date-processed=' . $useDateProcessed;
         return $this->makeRequest(self::$METHOD_GET, $uri);

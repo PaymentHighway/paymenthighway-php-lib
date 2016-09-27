@@ -176,8 +176,8 @@ class PaymentApi
 
 
     /**
-     * @param string $date in format yyyyMMdd. Use the acquirer processed date instead of report received date. Might cause changes to the past
-     * @param bool $useDateProcessed
+     * @param string $date in format yyyyMMdd. The date to fetch the reconciliation report for. Must be today - 1 day or earlier.
+     * @param bool $useDateProcessed Use the acquirer processed date instead of report received date. Might cause changes to the past
      * @return \Httpful\Response
      */
     public function fetchReconciliationReport($date, $useDateProcessed = false)

@@ -83,21 +83,21 @@ class FormBuilder {
      * @param bool $use3ds
      * @return Form
      */
-    public function generateAddCardParameters( $acceptCvcRequired = false, $skipFormNotifications = false,
-                                               $exitIframeOnResult = false, $exitIframeOn3ds = false, $use3ds = false )
+    public function generateAddCardParameters( $acceptCvcRequired = null, $skipFormNotifications = null,
+                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
     {
         $commonParameters = $this->createFormParameterArray();
 
-        if($acceptCvcRequired)
-            $commonParameters[self::$SPH_ACCEPT_CVC_REQUIRED] = true;
-        if($skipFormNotifications)
-            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = true;
-        if($exitIframeOnResult)
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = true;
-        if($exitIframeOn3ds)
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = true;
-        if($use3ds)
-            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = true;
+        if(!is_null($acceptCvcRequired))
+            $commonParameters[self::$SPH_ACCEPT_CVC_REQUIRED] = $acceptCvcRequired;
+        if(!is_null($skipFormNotifications))
+            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
+        if(!is_null($exitIframeOnResult))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
+        if(!is_null($exitIframeOn3ds))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
+        if(!is_null($use3ds))
+            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
 
         ksort($commonParameters, SORT_DESC);
 
@@ -122,8 +122,8 @@ class FormBuilder {
      * @param bool $use3ds
      * @return Form
      */
-    public function generatePaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = false,
-                                              $exitIframeOnResult = false, $exitIframeOn3ds = false, $use3ds = false )
+    public function generatePaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
+                                              $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -131,14 +131,14 @@ class FormBuilder {
         $commonParameters[self::$SPH_CURRENCY] = $currency;
         $commonParameters[self::$SPH_ORDER] = $orderId;
 
-        if($skipFormNotifications)
-            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = true;
-        if($exitIframeOnResult)
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = true;
-        if($exitIframeOn3ds)
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = true;
-        if($use3ds)
-            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = true;
+        if(!is_null($skipFormNotifications))
+            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
+        if(!is_null($exitIframeOnResult))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
+        if(!is_null($exitIframeOn3ds))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
+        if(!is_null($use3ds))
+            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
 
 
         ksort($commonParameters, SORT_DESC);
@@ -166,17 +166,17 @@ class FormBuilder {
      * @param bool $use3ds
      * @return Form
      */
-    public function generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = false,
-                                                        $exitIframeOnResult = false, $exitIframeOn3ds = false, $use3ds = false )
+    public function generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
+                                                        $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
     {
-        if($skipFormNotifications)
-            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = true;
-        if($exitIframeOnResult)
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = true;
-        if($exitIframeOn3ds)
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = true;
-        if($use3ds)
-            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = true;
+        if(!is_null($skipFormNotifications))
+            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
+        if(!is_null($exitIframeOnResult))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
+        if(!is_null($exitIframeOn3ds))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
+        if(!is_null($use3ds))
+            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
 
         $commonParameters = $this->createFormParameterArray();
 
@@ -207,17 +207,17 @@ class FormBuilder {
      * @param bool $use3ds
      * @return Form
      */
-    public function generatePayWithTokenAndCvcParameters( $tokenId, $amount, $currency, $orderId, $description, $skipFormNotifications = false,
-                                                          $exitIframeOnResult = false, $exitIframeOn3ds = false, $use3ds = false )
+    public function generatePayWithTokenAndCvcParameters( $tokenId, $amount, $currency, $orderId, $description, $skipFormNotifications = null,
+                                                          $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
     {
-        if($skipFormNotifications)
-            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = true;
-        if($exitIframeOnResult)
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = true;
-        if($exitIframeOn3ds)
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = true;
-        if($use3ds)
-            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = true;
+        if(!is_null($skipFormNotifications))
+            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
+        if(!is_null($exitIframeOnResult))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
+        if(!is_null($exitIframeOn3ds))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
+        if(!is_null($use3ds))
+            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
 
         $commonParameters = $this->createFormParameterArray();
 
@@ -245,10 +245,10 @@ class FormBuilder {
      * @return Form
      */
     public function generatePayWithMobilePayParameters($amount, $currency, $orderId, $description,
-                                                       $exitIframeOnResult = false)
+                                                       $exitIframeOnResult = null)
     {
-        if($exitIframeOnResult)
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = true;
+        if(!is_null($exitIframeOnResult))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
 
         $commonParameters = $this->createFormParameterArray();
 

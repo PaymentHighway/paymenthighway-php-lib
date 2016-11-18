@@ -23,6 +23,7 @@ class FormBuilder {
     static $SPH_EXIT_IFRAME_ON_RESULT = 'sph-exit-iframe-on-result';
     static $SPH_EXIT_IFRAME_ON_THREE_D_SECURE = 'sph-exit-iframe-on-three-d-secure';
     static $SPH_USE_THREE_D_SECURE = 'sph-use-three-d-secure';
+    static $SPH_SHOP_LOGO_URL = 'sph-shop-logo-url';
     static $LANGUAGE = "language";
     static $DESCRIPTION = "description";
     static $SIGNATURE = "signature";
@@ -242,13 +243,17 @@ class FormBuilder {
      * @param string $orderId
      * @param string $description
      * @param bool $exitIframeOnResult
+     * @param string $shopLogoUrl The logo must be 250x250 pixel in .png format and must be hosted on a HTTPS (secure) server. Optional.
      * @return Form
      */
     public function generatePayWithMobilePayParameters($amount, $currency, $orderId, $description,
-                                                       $exitIframeOnResult = null)
+                                                       $exitIframeOnResult = null, $shopLogoUrl = null)
     {
         if(!is_null($exitIframeOnResult))
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
+
+        if(!is_null($shopLogoUrl))
+            $commonParameters[self::$SPH_SHOP_LOGO_URL] = $shopLogoUrl;
 
         $commonParameters = $this->createFormParameterArray();
 

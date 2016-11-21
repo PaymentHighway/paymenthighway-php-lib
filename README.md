@@ -97,15 +97,31 @@ $description = "A Box of Dreams. 19,90€";
 $form = formBuilder->generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description);
 ```
 
-Example generatePayWithMobilePayParameters
+
+Example generatePayWithMobilePayParameters with shop logo
 ```php
 $amount = "1990";
 $currency = "EUR";
 $orderId = "1000123A";
 $description = "A Box of Dreams. 19,90€";
+$exitIframeOnResult = null;
+$shopLogoUrl = "https://foo.bar/biz.png";
 
-$form = formBuilder->generatePayWithMobilePayParameters($amount, $currency, $orderId, $description);
+$form = formBuilder->generatePayWithMobilePayParameters(
+		$amount, 
+		$currency, 
+		$orderId, 
+		$description, 
+		$exitIframeOnResult, 
+		$shopLogoUrl
+	);
 ```
+
+##### About shop logo in MobilePay
+* The logo must be 250x250 pixel in .png format. 
+* MPO will show a default logo in the app if this is empty or the image location doesn’t exist. 
+* Once a ShopLogoURL has been sent to MPOnline the .png-file on that URL must never be changed. If the shop wants a new (or more than one) logo, a new ShopLogoURL must be used. 
+* The logo must be hosted on a HTTPS (secure) server.
 
 Each method returns a Form object which provides required hidden fields for the HTML form to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, which are included in the Form fields.
 

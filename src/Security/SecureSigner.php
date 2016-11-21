@@ -99,7 +99,7 @@ class SecureSigner {
     private function concatParameters( array $parameters )
     {
         $string = "";
-
+        ksort($parameters);
         foreach( $parameters as $key => $value)
             $string .= $key . ':' . $value . "\n";
 

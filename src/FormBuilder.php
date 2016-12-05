@@ -26,8 +26,8 @@ class FormBuilder {
     static $SPH_SHOP_LOGO_URL = 'sph-shop-logo-url';
     static $SPH_MOBILEPAY_PHONE_NUMBER = 'sph-mobilepay-phone-number';
     static $SPH_MOBILEPAY_SHOP_NAME = 'sph-mobilepay-shop-name';
-    static $SPH_SUB_MERCHANT_NAME = 'sph-sub.merchant-name';
-    static $SPH_SUB_MERCHANT_ID = 'sph-sub.merchant-id';
+    static $SPH_SUB_MERCHANT_NAME = 'sph-sub-merchant-name';
+    static $SPH_SUB_MERCHANT_ID = 'sph-sub-merchant-id';
     static $LANGUAGE = "language";
     static $DESCRIPTION = "description";
     static $SIGNATURE = "signature";

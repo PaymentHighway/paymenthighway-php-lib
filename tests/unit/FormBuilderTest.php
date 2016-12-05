@@ -134,7 +134,7 @@ class FormBuilderTest extends TestBase
     public function payWithMobilePayWithOptionalParameters($method, $signatureKeyId, $signatureSecret,
                                      $account, $merchant, $baseUrl, $successUrl, $failureUrl, $cancelUrl,
                                      $language, $amount, $currency, $orderId, $description, $shopLogoUrl,
-                                     $shopName, $subMerchantId, $subMerchantName
+                                     $phoneNumber, $shopName, $subMerchantId, $subMerchantName
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -144,7 +144,7 @@ class FormBuilderTest extends TestBase
         );
 
         $form = $formbuilder->generatePayWithMobilePayParameters($amount, $currency, $orderId, $description, null,
-            $shopLogoUrl, $shopName, $subMerchantId, $subMerchantName);
+            $shopLogoUrl, $phoneNumnber, $shopName, $subMerchantId, $subMerchantName);
 
         $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
         $this->assertEquals($baseUrl . '/form/view/mobilepay', $form->getAction());
@@ -271,6 +271,7 @@ class FormBuilderTest extends TestBase
                 '123',
                 'testitilaus',
                 'https://foo.bar/biz.png',
+                '+3581234567',
                 'Jaakon solki',
                 'subMerchantId',
                 'subMerchantName'

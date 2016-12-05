@@ -149,7 +149,7 @@ class FormBuilderTest extends TestBase
         $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
         $this->assertEquals($baseUrl . '/form/view/mobilepay', $form->getAction());
         $this->assertEquals($method, $form->getMethod());
-        $this->assertCount(16, $form->getParameters());
+        $this->assertCount(17, $form->getParameters());
     }
 
     /**

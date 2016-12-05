@@ -98,7 +98,7 @@ $form = formBuilder->generateAddCardAndPaymentParameters($amount, $currency, $or
 ```
 
 
-Example generatePayWithMobilePayParameters with shop logo
+Example generatePayWithMobilePayParameters with optional parameters
 ```php
 $amount = "1990";
 $currency = "EUR";
@@ -106,14 +106,18 @@ $orderId = "1000123A";
 $description = "A Box of Dreams. 19,90€";
 $exitIframeOnResult = null;
 $shopLogoUrl = "https://foo.bar/biz.png";
-
+$phoneNumber = "+3581234567"; 
+$shopName = "Jaskan solki";
+		
 $form = formBuilder->generatePayWithMobilePayParameters(
 		$amount, 
 		$currency, 
 		$orderId, 
 		$description, 
 		$exitIframeOnResult, 
-		$shopLogoUrl
+		$shopLogoUrl, 
+		$phoneNumber, 
+		$shopName
 	);
 ```
 
@@ -150,6 +154,12 @@ catch(Exception $e) {
 In order to do safe transactions, an execution model is used where the first call to /transaction acquires a financial transaction handle, later referred as “ID”, which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the `PaymentAPI->statusTransaction( $transactionId )` request. 
 
 In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must be used to get the actual card token. 
+
+Remember to check the result code:
+```php
+$response->body->result->code
+```
+Code 100 means "Request successful". Other response codes can be found: [https://paymenthighway.fi/dev/?php#rcode-result-codes](https://paymenthighway.fi/dev/?php#rcode-result-codes)
 
 Initializing the Payment API
 

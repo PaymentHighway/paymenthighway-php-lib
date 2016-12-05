@@ -174,6 +174,8 @@ class FormBuilder {
     public function generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                                         $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
     {
+        $commonParameters = $this->createFormParameterArray();
+
         if(!is_null($skipFormNotifications))
             $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
         if(!is_null($exitIframeOnResult))
@@ -182,8 +184,6 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
-
-        $commonParameters = $this->createFormParameterArray();
 
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = $currency;
@@ -215,6 +215,8 @@ class FormBuilder {
     public function generatePayWithTokenAndCvcParameters( $tokenId, $amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                                           $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
     {
+        $commonParameters = $this->createFormParameterArray();
+
         if(!is_null($skipFormNotifications))
             $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
         if(!is_null($exitIframeOnResult))
@@ -223,8 +225,6 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
-
-        $commonParameters = $this->createFormParameterArray();
 
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = $currency;
@@ -258,6 +258,8 @@ class FormBuilder {
                                                        $exitIframeOnResult = null, $shopLogoUrl = null, $phoneNumber = null,
                                                        $shopName = null , $subMerchantId = null, $subMerchantName = null)
     {
+        $commonParameters = $this->createFormParameterArray();
+
         if(!is_null($exitIframeOnResult))
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
 
@@ -275,8 +277,6 @@ class FormBuilder {
 
         if(!is_null($subMerchantName))
             $commonParameters[self::$SPH_SUB_MERCHANT_NAME] = $subMerchantName;
-
-        $commonParameters = $this->createFormParameterArray();
 
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = $currency;

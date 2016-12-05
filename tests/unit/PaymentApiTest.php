@@ -156,6 +156,7 @@ class PaymentApiTest extends TestBase
      */
     public function getReportSuccess( PaymentApi $api )
     {
+        date_default_timezone_set('UTC');
         $date = date('Ymd');
 
         $response = $api->getReport($date)->body;

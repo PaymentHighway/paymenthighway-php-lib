@@ -144,7 +144,7 @@ class FormBuilderTest extends TestBase
         );
 
         $form = $formbuilder->generatePayWithMobilePayParameters($amount, $currency, $orderId, $description, null,
-            $shopLogoUrl, $phoneNumnber, $shopName, $subMerchantId, $subMerchantName);
+            $shopLogoUrl, $phoneNumber, $shopName, $subMerchantId, $subMerchantName);
 
         $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
         $this->assertEquals($baseUrl . '/form/view/mobilepay', $form->getAction());

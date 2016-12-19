@@ -128,6 +128,31 @@ class FormBuilderTest extends TestBase
     }
 
     /**
+     * @dataProvider payWithMobilePayWithOptionalParametersParameters
+     * @test
+     */
+    public function payWithMobilePayWithOptionalParameters($method, $signatureKeyId, $signatureSecret,
+                                     $account, $merchant, $baseUrl, $successUrl, $failureUrl, $cancelUrl,
+                                     $language, $amount, $currency, $orderId, $description, $shopLogoUrl,
+                                     $phoneNumber, $shopName, $subMerchantId, $subMerchantName
+    )
+    {
+        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+            $method, $signatureKeyId, $signatureSecret, $account,
+            $merchant, $baseUrl, $successUrl, $failureUrl,
+            $cancelUrl, $language
+        );
+
+        $form = $formbuilder->generatePayWithMobilePayParameters($amount, $currency, $orderId, $description, null,
+            $shopLogoUrl, $phoneNumber, $shopName, $subMerchantId, $subMerchantName);
+
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/mobilepay', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
+        $this->assertCount(17, $form->getParameters());
+    }
+
+    /**
      * @return array
      */
     public function addPaymentCardParameters()
@@ -220,6 +245,36 @@ class FormBuilderTest extends TestBase
                 'EUR',
                 '123',
                 'testitilaus'
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function payWithMobilePayWithOptionalParametersParameters()
+    {
+        return array(
+            array(
+                'POST',
+                'testKey',
+                'testSecret',
+                'test',
+                'test_merchantId',
+                'https://v1-hub-staging.sph-test-solinor.com',
+                'https://example.com/success',
+                'https://example.com/failure',
+                'https://example.com/cancel',
+                'FI',
+                '100',
+                'EUR',
+                '123',
+                'testitilaus',
+                'https://foo.bar/biz.png',
+                '+3581234567',
+                'Jaakon solki',
+                'subMerchantId',
+                'subMerchantName'
             )
         );
     }

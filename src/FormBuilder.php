@@ -24,6 +24,10 @@ class FormBuilder {
     static $SPH_EXIT_IFRAME_ON_THREE_D_SECURE = 'sph-exit-iframe-on-three-d-secure';
     static $SPH_USE_THREE_D_SECURE = 'sph-use-three-d-secure';
     static $SPH_SHOP_LOGO_URL = 'sph-shop-logo-url';
+    static $SPH_MOBILEPAY_PHONE_NUMBER = 'sph-mobilepay-phone-number';
+    static $SPH_MOBILEPAY_SHOP_NAME = 'sph-mobilepay-shop-name';
+    static $SPH_SUB_MERCHANT_NAME = 'sph-sub-merchant-name';
+    static $SPH_SUB_MERCHANT_ID = 'sph-sub-merchant-id';
     static $LANGUAGE = "language";
     static $DESCRIPTION = "description";
     static $SIGNATURE = "signature";
@@ -170,6 +174,8 @@ class FormBuilder {
     public function generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                                         $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
     {
+        $commonParameters = $this->createFormParameterArray();
+
         if(!is_null($skipFormNotifications))
             $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
         if(!is_null($exitIframeOnResult))
@@ -178,8 +184,6 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
-
-        $commonParameters = $this->createFormParameterArray();
 
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = $currency;
@@ -211,6 +215,8 @@ class FormBuilder {
     public function generatePayWithTokenAndCvcParameters( $tokenId, $amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                                           $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
     {
+        $commonParameters = $this->createFormParameterArray();
+
         if(!is_null($skipFormNotifications))
             $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
         if(!is_null($exitIframeOnResult))
@@ -219,8 +225,6 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
-
-        $commonParameters = $this->createFormParameterArray();
 
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = $currency;
@@ -244,18 +248,35 @@ class FormBuilder {
      * @param string $description
      * @param bool $exitIframeOnResult
      * @param string $shopLogoUrl The logo must be 250x250 pixel in .png format and must be hosted on a HTTPS (secure) server. Optional.
+     * @param string $phoneNumber User phone number with country code. Max AN 15. Optional.
+     * @param string $shopName Max 100 AN. Name of the shop/merchant. MobilePay app displays this under the shop logo.  If omitted, the merchant name from PH is used. Optional.
+     * @param string $subMerchantId Max 15 AN. Should only be used by a Payment Facilitator customer
+     * @param string $subMerchantName Max 21 AN. Should only be used by a Payment Facilitator customer
      * @return Form
      */
     public function generatePayWithMobilePayParameters($amount, $currency, $orderId, $description,
-                                                       $exitIframeOnResult = null, $shopLogoUrl = null)
+                                                       $exitIframeOnResult = null, $shopLogoUrl = null, $phoneNumber = null,
+                                                       $shopName = null , $subMerchantId = null, $subMerchantName = null)
     {
+        $commonParameters = $this->createFormParameterArray();
+
         if(!is_null($exitIframeOnResult))
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
 
         if(!is_null($shopLogoUrl))
             $commonParameters[self::$SPH_SHOP_LOGO_URL] = $shopLogoUrl;
 
-        $commonParameters = $this->createFormParameterArray();
+        if(!is_null($phoneNumber))
+            $commonParameters[self::$SPH_MOBILEPAY_PHONE_NUMBER] = $phoneNumber;
+
+        if(!is_null($shopName))
+            $commonParameters[self::$SPH_MOBILEPAY_SHOP_NAME] = $shopName;
+
+        if(!is_null($subMerchantId))
+            $commonParameters[self::$SPH_SUB_MERCHANT_ID] = $subMerchantId;
+
+        if(!is_null($subMerchantName))
+            $commonParameters[self::$SPH_SUB_MERCHANT_NAME] = $subMerchantName;
 
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = $currency;

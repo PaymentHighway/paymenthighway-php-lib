@@ -31,6 +31,10 @@ class FormBuilder {
     static $LANGUAGE = "language";
     static $DESCRIPTION = "description";
     static $SIGNATURE = "signature";
+    static $SPH_WEBHOOK_SUCCESS_URL = "sph-webhook-success-url";
+    static $SPH_WEBHOOK_FAILURE_URL = "sph-webhook-failure-url";
+    static $SPH_WEBHOOK_CANCEL_URL = "sph-webhook-cancel-url";
+    static $SPH_WEBHOOK_DELAY = "sph-webhook-delay";
 
     static $ADD_CARD_URI = "/form/view/add_card";
     static $PAYMENT_URI = "/form/view/pay_with_card";
@@ -87,10 +91,16 @@ class FormBuilder {
      * @param bool $exitIframeOnResult
      * @param bool $exitIframeOn3ds
      * @param bool $use3ds
+     * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+     * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
+     * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+     * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @return Form
      */
     public function generateAddCardParameters( $acceptCvcRequired = null, $skipFormNotifications = null,
-                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
+                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
+                                               $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
+                                               $webhookDelay = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -104,6 +114,9 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
+
+        $commonParameters = array_merge($commonParameters,
+            $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
 
         ksort($commonParameters, SORT_DESC);
 
@@ -126,10 +139,16 @@ class FormBuilder {
      * @param bool $exitIframeOnResult
      * @param bool $exitIframeOn3ds
      * @param bool $use3ds
+     * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+     * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
+     * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+     * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @return Form
      */
     public function generatePaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
-                                              $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
+                                              $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
+                                              $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
+                                              $webhookDelay = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -146,6 +165,8 @@ class FormBuilder {
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
 
+        $commonParameters = array_merge($commonParameters,
+            $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
 
         ksort($commonParameters, SORT_DESC);
 
@@ -170,10 +191,16 @@ class FormBuilder {
      * @param bool $exitIframeOnResult
      * @param bool $exitIframeOn3ds
      * @param bool $use3ds
+     * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+     * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
+     * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+     * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @return Form
      */
     public function generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
-                                                        $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
+                                                        $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
+                                                        $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
+                                                        $webhookDelay = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -185,6 +212,9 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
+
+        $commonParameters = array_merge($commonParameters,
+            $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
 
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = $currency;
@@ -211,10 +241,16 @@ class FormBuilder {
      * @param bool $exitIframeOnResult
      * @param bool $exitIframeOn3ds
      * @param bool $use3ds
+     * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+     * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
+     * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+     * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @return Form
      */
     public function generatePayWithTokenAndCvcParameters( $tokenId, $amount, $currency, $orderId, $description, $skipFormNotifications = null,
-                                                          $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
+                                                          $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
+                                                          $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
+                                                          $webhookDelay = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -226,6 +262,9 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
+
+        $commonParameters = array_merge($commonParameters,
+            $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
 
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = $currency;
@@ -253,11 +292,17 @@ class FormBuilder {
      * @param string $shopName Max 100 AN. Name of the shop/merchant. MobilePay app displays this under the shop logo.  If omitted, the merchant name from PH is used. Optional.
      * @param string $subMerchantId Max 15 AN. Should only be used by a Payment Facilitator customer
      * @param string $subMerchantName Max 21 AN. Should only be used by a Payment Facilitator customer
+     * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+     * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
+     * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+     * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @return Form
      */
     public function generatePayWithMobilePayParameters($amount, $currency, $orderId, $description,
                                                        $exitIframeOnResult = null, $shopLogoUrl = null, $phoneNumber = null,
-                                                       $shopName = null , $subMerchantId = null, $subMerchantName = null)
+                                                       $shopName = null , $subMerchantId = null, $subMerchantName = null,
+                                                       $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
+                                                       $webhookDelay = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -278,6 +323,9 @@ class FormBuilder {
 
         if(!is_null($subMerchantName))
             $commonParameters[self::$SPH_SUB_MERCHANT_NAME] = $subMerchantName;
+
+        $commonParameters = array_merge($commonParameters,
+            $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
 
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = $currency;
@@ -305,10 +353,16 @@ class FormBuilder {
      * @param bool $exitIframeOnResult
      * @param bool $exitIframeOn3ds
      * @param bool $use3ds
+     * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+     * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
+     * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+     * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @return Form
      */
     public function generateMasterpassParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
-                                              $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
+                                                 $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
+                                                 $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
+                                                 $webhookDelay = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -325,6 +379,8 @@ class FormBuilder {
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
 
+        $commonParameters = array_merge($commonParameters,
+            $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
 
         ksort($commonParameters, SORT_DESC);
 
@@ -336,6 +392,27 @@ class FormBuilder {
 
         return new Form($this->method, $this->baseUrl, self::$MASTERPASS_PAY_URI, $commonParameters);
 
+    }
+
+    /**
+     * @param $webhookSuccessUrl
+     * @param $webhookFailureUrl
+     * @param $webhookCancelUrl
+     * @param $webhookDelay
+     * @return array
+     */
+    private function createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay) {
+        $parameters = [];
+        if(!is_null($webhookSuccessUrl))
+            $parameters[self::$SPH_WEBHOOK_SUCCESS_URL] = $webhookSuccessUrl;
+        if(!is_null($webhookFailureUrl))
+            $parameters[self::$SPH_WEBHOOK_FAILURE_URL] = $webhookFailureUrl;
+        if(!is_null($webhookCancelUrl))
+            $parameters[self::$SPH_WEBHOOK_CANCEL_URL] = $webhookCancelUrl;
+        if(!is_null($webhookDelay))
+            $parameters[self::$SPH_WEBHOOK_DELAY] = $webhookDelay;
+
+        return $parameters;
     }
 
     /**

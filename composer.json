@@ -32,5 +32,8 @@
   "config": {
     "bin-dir": "bin"
   },
-  "minimum-stability" : "stable"
+  "minimum-stability" : "stable",
+  "scripts": {
+    "test": "phpunit"
+  }
 }

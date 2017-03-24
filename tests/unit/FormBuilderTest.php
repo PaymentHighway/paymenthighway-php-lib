@@ -1,6 +1,6 @@
 <?php namespace Solinor\PaymentHighway\Tests\Unit;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 use Solinor\PaymentHighway\Tests\TestBase;
 
 class FormBuilderTest extends TestBase

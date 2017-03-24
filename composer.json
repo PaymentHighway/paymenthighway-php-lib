@@ -12,8 +12,8 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "ramsey/uuid" : "^2.8",
-    "nategood/httpful": "*",
+    "ramsey/uuid" : "^3.0",
+    "nategood/httpful": "^0.2",
     "respect/validation": "^1.0"
   },
   "require-dev" : {
@@ -32,5 +32,8 @@
   "config": {
     "bin-dir": "bin"
   },
-  "minimum-stability" : "stable"
+  "minimum-stability" : "stable",
+  "scripts": {
+    "test": "phpunit"
+  }
 }

@@ -1,6 +1,6 @@
 <?php namespace Solinor\PaymentHighway;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 
 class PaymentHighwayUtility {

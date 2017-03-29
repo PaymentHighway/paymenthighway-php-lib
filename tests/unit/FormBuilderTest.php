@@ -1,6 +1,6 @@
 <?php namespace Solinor\PaymentHighway\Tests\Unit;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 use Solinor\PaymentHighway\Tests\TestBase;
 use Solinor\PaymentHighway;
 

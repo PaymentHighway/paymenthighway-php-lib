@@ -37,7 +37,8 @@ class FormBuilderTest extends TestBase
      */
     public function PaymentParameters($method, $signatureKeyId, $signatureSecret, $account,
                                       $merchant, $baseUrl, $successUrl, $failureUrl,
-                                      $cancelUrl, $language, $amount, $currency, $orderId, $description
+                                      $cancelUrl, $language, $amount, $currency, $orderId, $description,
+                                      $skipPaymentSelector
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -46,12 +47,14 @@ class FormBuilderTest extends TestBase
             $cancelUrl, $language
         );
 
-        $form = $formbuilder->generatePaymentParameters($amount, $currency, $orderId, $description);
+        $form = $formbuilder->generatePaymentParameters($amount, $currency, $orderId, $description, null,
+            null, null, null, null, null, null, null,
+            $skipPaymentSelector);
 
         $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
         $this->assertEquals($baseUrl . '/form/view/pay_with_card', $form->getAction());
         $this->assertEquals($method, $form->getMethod());
-        $this->assertCount(13, $form->getParameters());
+        $this->assertCount(14, $form->getParameters());
     }
 
     /**
@@ -204,8 +207,8 @@ class FormBuilderTest extends TestBase
     public function paymentParametersWithWebhook($method, $signatureKeyId, $signatureSecret, $account,
                                                  $merchant, $baseUrl, $successUrl, $failureUrl,
                                                  $cancelUrl, $language, $amount, $currency, $orderId, $description,
-                                                 $webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl,
-                                                 $webhookDelay
+                                                 $skipPaymentSelector,$webhookSuccessUrl, $webhookFailureUrl,
+                                                 $webhookCancelUrl, $webhookDelay
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -227,7 +230,8 @@ class FormBuilderTest extends TestBase
     public function addCardAndPayWithWebhookParameters($method, $signatureKeyId, $signatureSecret, $account,
                                                        $merchant, $baseUrl, $successUrl, $failureUrl,
                                                        $cancelUrl, $language, $amount, $currency, $orderId, $description,
-                                                       $webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay
+                                                       $skipPaymentSelector,$webhookSuccessUrl, $webhookFailureUrl,
+                                                       $webhookCancelUrl, $webhookDelay
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -297,7 +301,8 @@ class FormBuilderTest extends TestBase
     public function PaymentWithMasterpassWithWebhook($method, $signatureKeyId, $signatureSecret, $account,
                                                      $merchant, $baseUrl, $successUrl, $failureUrl,
                                                      $cancelUrl, $language, $amount, $currency, $orderId, $description,
-                                                     $webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay
+                                                     $skipPaymentSelector,$webhookSuccessUrl, $webhookFailureUrl,
+                                                     $webhookCancelUrl, $webhookDelay
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -366,7 +371,8 @@ class FormBuilderTest extends TestBase
                 '100',
                 'EUR',
                 '123',
-                'testitilaus'
+                'testitilaus',
+                true
             )
         );
     }

@@ -35,6 +35,7 @@ class FormBuilder {
     static $SPH_WEBHOOK_FAILURE_URL = "sph-webhook-failure-url";
     static $SPH_WEBHOOK_CANCEL_URL = "sph-webhook-cancel-url";
     static $SPH_WEBHOOK_DELAY = "sph-webhook-delay";
+    static $SPH_SKIP_PAYMENT_METHOD_SELECTOR = "sph-skip-payment-method-selector";
 
     static $ADD_CARD_URI = "/form/view/add_card";
     static $PAYMENT_URI = "/form/view/pay_with_card";
@@ -148,7 +149,7 @@ class FormBuilder {
     public function generatePaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
                                               $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                              $webhookDelay = null)
+                                              $webhookDelay = null, $skipPaymentMethodSelector = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -164,6 +165,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
+        if(!is_null($skipPaymentMethodSelector))
+            $commonParameters[self::$SPH_SKIP_PAYMENT_METHOD_SELECTOR] = $skipPaymentMethodSelector;
 
         $commonParameters = array_merge($commonParameters,
             $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));

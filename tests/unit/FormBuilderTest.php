@@ -38,7 +38,7 @@ class FormBuilderTest extends TestBase
     public function PaymentParameters($method, $signatureKeyId, $signatureSecret, $account,
                                       $merchant, $baseUrl, $successUrl, $failureUrl,
                                       $cancelUrl, $language, $amount, $currency, $orderId, $description,
-                                      $skipPaymentSelector
+                                      $showPaymentSelector
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -48,8 +48,7 @@ class FormBuilderTest extends TestBase
         );
 
         $form = $formbuilder->generatePaymentParameters($amount, $currency, $orderId, $description, null,
-            null, null, null, null, null, null, null,
-            $skipPaymentSelector);
+            null, null, null, $showPaymentSelector);
 
         $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
         $this->assertEquals($baseUrl . '/form/view/pay_with_card', $form->getAction());
@@ -221,7 +220,7 @@ class FormBuilderTest extends TestBase
                 'EUR',
                 '123',
                 'testitilaus',
-                true
+                false
             )
         );
     }

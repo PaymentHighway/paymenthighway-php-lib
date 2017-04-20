@@ -31,7 +31,7 @@ class FormBuilder {
     static $LANGUAGE = "language";
     static $DESCRIPTION = "description";
     static $SIGNATURE = "signature";
-    static $SPH_SKIP_PAYMENT_METHOD_SELECTOR = "sph-skip-payment-method-selector";
+    static $SPH_SHOW_PAYMENT_METHOD_SELECTOR = "sph-show-payment-method-selector";
 
     static $ADD_CARD_URI = "/form/view/add_card";
     static $PAYMENT_URI = "/form/view/pay_with_card";
@@ -127,11 +127,12 @@ class FormBuilder {
      * @param bool $exitIframeOnResult
      * @param bool $exitIframeOn3ds
      * @param bool $use3ds
+     * @param bool $showPaymentMethodSelector
      * @return Form
      */
     public function generatePaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
-                                              $skipPaymentMethodSelector = null)
+                                              $showPaymentMethodSelector = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -147,8 +148,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
-        if(!is_null($skipPaymentMethodSelector))
-            $commonParameters[self::$SPH_SKIP_PAYMENT_METHOD_SELECTOR] = $skipPaymentMethodSelector;
+        if(!is_null($showPaymentMethodSelector))
+            $commonParameters[self::$SPH_SHOW_PAYMENT_METHOD_SELECTOR] = $showPaymentMethodSelector;
 
         ksort($commonParameters, SORT_DESC);
 

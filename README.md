@@ -34,7 +34,7 @@ Contains classes used for hash calculations
 
 Start with building the HTTP form parameters by using the FormParameterBuilder. Create an instance of the builder, then use the generate methods to receive a list of parameters for each API call.
 
-Initializing the builder
+### Initializing the builder
 
 ```php
 
@@ -56,7 +56,7 @@ $formBuilder = new FormBuilder($method, $signatureKeyId, $signatureSecret, $acco
                               $cancelUrl, $language);
 ```
 
-Example generateAddCardParameters
+### Example generateAddCardParameters
 
 ```php
 $form = $formBuilder->generateAddCardParameters($accept_cvc_required = false);
@@ -75,7 +75,7 @@ foreach ($parameters as $key => $value) {
 }
 ```
 
-Example generatePaymentParameters 
+### Example generatePaymentParameters 
 
 ```php
 $amount = "1990";
@@ -87,7 +87,7 @@ $form = $formBuilder->generatePaymentParameters($amount, $currency, $orderId, $d
 
 ```
         	
-Example generateGetAddCardAndPaymentParameters
+### Example generateGetAddCardAndPaymentParameters
 ```php
 $amount = "1990";
 $currency = "EUR";
@@ -98,7 +98,7 @@ $form = formBuilder->generateAddCardAndPaymentParameters($amount, $currency, $or
 ```
 
 
-Example generatePayWithMobilePayParameters with optional parameters
+### Example generatePayWithMobilePayParameters with optional parameters
 ```php
 $amount = "1990";
 $currency = "EUR";
@@ -127,7 +127,7 @@ $form = formBuilder->generatePayWithMobilePayParameters(
 * Once a ShopLogoURL has been sent to MPOnline the .png-file on that URL must never be changed. If the shop wants a new (or more than one) logo, a new ShopLogoURL must be used. 
 * The logo must be hosted on a HTTPS (secure) server.
 
-Example generateMasterpassParameters
+### Example generateMasterpassParameters
 ```php
 $amount = "1990";
 $currency = "EUR";
@@ -142,7 +142,7 @@ In order to charge a card given in the Form API, the corresponding transaction i
 
 In addition, after the user is redirected to one of your provided success, failure or cancel URLs, you should validate the request parameters and the signature.
 
-Example validateFormRedirect
+### Example validateFormRedirect
 
 ```php
 
@@ -164,13 +164,13 @@ In order to do safe transactions, an execution model is used where the first cal
 
 In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must be used to get the actual card token. 
 
-Remember to check the result code:
+### Remember to check the result code:
 ```php
 $response->body->result->code
 ```
 Code 100 means "Request successful". Other response codes can be found: [https://paymenthighway.fi/dev/?php#rcode-result-codes](https://paymenthighway.fi/dev/?php#rcode-result-codes)
 
-Initializing the Payment API
+### Initializing the Payment API
 
 ```php
 use Solinor\PaymentHighway\PaymentApi
@@ -184,7 +184,7 @@ $merchant = "test_merchantId";
 $paymentApi = new PaymentApi($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant);
 ```
         
-Example Commit Form Transaction
+### Example Commit Form Transaction
 ```php
 $transactionId = "f23a9be0-15fe-43df-98ac-92f6a5731c3b"; // get sph-transaction-id as a GET parameter
 $amount = 1999;
@@ -193,17 +193,17 @@ $currency = "EUR";
 $response = $paymentApi->commitFormTransaction($transactionId, $amount, $currency ); //response is pure json run through json_decode();
 ```
 
-Example Tokenize (get the actual card token by using token id)
+### Example Tokenize (get the actual card token by using token id)
 ```php
 $response = $paymentApi->tokenize( $tokenizationId );
 ```
 
-Example Init transaction
+### Example Init transaction
 ```php
 $response = $paymentApi->initTransaction();
 ```
 
-Example Debit with Token
+### Example Debit with Token
 ```php
 $token = new \Solinor\PaymentHighway\Model\Token( $tokenId );
 
@@ -212,22 +212,22 @@ $transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $amount, $
 $response = $paymentApi->debitTransaction( $transactionId, $transaction);
 ```
 
-Example Revert
+### Example Revert
 ```php
 $response = $paymentApi->revertTransaction("transactionId", "amount");
 ```
 
-Example Transaction Status
+### Example Transaction Status
 ```php
 $status = paymentApi->statusTransaction( $transactionId );
 ```
 
-Example Daily Batch Report
+### Example Daily Batch Report
 ```php
 $response = paymentApi->getReport( $date ); //in "date('Y-M-D')" format
 ```
 
-Example Order Status
+### Example Order Status
 ```php
 $response = paymentApi->searchByOrderId( $orderId );
 ```	

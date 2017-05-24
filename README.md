@@ -127,6 +127,15 @@ $form = formBuilder->generatePayWithMobilePayParameters(
 * Once a ShopLogoURL has been sent to MPOnline the .png-file on that URL must never be changed. If the shop wants a new (or more than one) logo, a new ShopLogoURL must be used. 
 * The logo must be hosted on a HTTPS (secure) server.
 
+Example generateMasterpassParameters
+```php
+$amount = "1990";
+$currency = "EUR";
+$orderId = "1000123A";
+$description = "A Box of Dreams. 19,90€";
+$form = $formbuilder->generateMasterpassParameters($amount, $currency, $orderId, $description);
+```
+
 Each method returns a Form object which provides required hidden fields for the HTML form to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, which are included in the Form fields.
 
 In order to charge a card given in the Form API, the corresponding transaction id must be committed by using Payment API.

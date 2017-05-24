@@ -31,12 +31,14 @@ class FormBuilder {
     static $LANGUAGE = "language";
     static $DESCRIPTION = "description";
     static $SIGNATURE = "signature";
+    static $SPH_SHOW_PAYMENT_METHOD_SELECTOR = "sph-show-payment-method-selector";
 
     static $ADD_CARD_URI = "/form/view/add_card";
     static $PAYMENT_URI = "/form/view/pay_with_card";
     static $ADD_AND_PAY_URI = "/form/view/add_and_pay_with_card";
     static $CVC_AND_TOKEN_URI = "/form/view/pay_with_token_and_cvc";
     static $MOBILE_PAY_URI = "/form/view/mobilepay";
+    static $MASTERPASS_PAY_URI = "/form/view/masterpass";
 
 
     private $method = 'POST';
@@ -89,7 +91,7 @@ class FormBuilder {
      * @return Form
      */
     public function generateAddCardParameters( $acceptCvcRequired = null, $skipFormNotifications = null,
-                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
+                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -125,10 +127,12 @@ class FormBuilder {
      * @param bool $exitIframeOnResult
      * @param bool $exitIframeOn3ds
      * @param bool $use3ds
+     * @param bool $showPaymentMethodSelector
      * @return Form
      */
     public function generatePaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
-                                              $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
+                                              $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
+                                              $showPaymentMethodSelector = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -144,7 +148,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
-
+        if(!is_null($showPaymentMethodSelector))
+            $commonParameters[self::$SPH_SHOW_PAYMENT_METHOD_SELECTOR] = $showPaymentMethodSelector;
 
         ksort($commonParameters, SORT_DESC);
 
@@ -172,7 +177,7 @@ class FormBuilder {
      * @return Form
      */
     public function generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
-                                                        $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
+                                                        $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -213,7 +218,7 @@ class FormBuilder {
      * @return Form
      */
     public function generatePayWithTokenAndCvcParameters( $tokenId, $amount, $currency, $orderId, $description, $skipFormNotifications = null,
-                                                          $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null )
+                                                          $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -292,6 +297,50 @@ class FormBuilder {
 
         return new Form($this->method, $this->baseUrl, self::$MOBILE_PAY_URI, $commonParameters);
     }
+
+    /**
+     * Get parameters for Masterpass payment request.
+     *
+     * @param string $amount
+     * @param string $currency
+     * @param string $orderId
+     * @param string $description
+     * @param bool $skipFormNotifications
+     * @param bool $exitIframeOnResult
+     * @param bool $exitIframeOn3ds
+     * @param bool $use3ds
+     * @return Form
+     */
+    public function generateMasterpassParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
+                                                 $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null)
+    {
+        $commonParameters = $this->createFormParameterArray();
+
+        $commonParameters[self::$SPH_AMOUNT] = $amount;
+        $commonParameters[self::$SPH_CURRENCY] = $currency;
+        $commonParameters[self::$SPH_ORDER] = $orderId;
+
+        if(!is_null($skipFormNotifications))
+            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
+        if(!is_null($exitIframeOnResult))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
+        if(!is_null($exitIframeOn3ds))
+            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
+        if(!is_null($use3ds))
+            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
+
+        ksort($commonParameters, SORT_DESC);
+
+        $signature = $this->createSecureSign(self::$PAYMENT_URI, $commonParameters);
+
+        $commonParameters[self::$DESCRIPTION] = $description;
+        $commonParameters[self::$LANGUAGE] = $this->language;
+        $commonParameters[self::$SIGNATURE] = $signature;
+
+        return new Form($this->method, $this->baseUrl, self::$MASTERPASS_PAY_URI, $commonParameters);
+
+    }
+
 
     /**
      * @return array

@@ -2,6 +2,7 @@
 
 use Ramsey\Uuid\Uuid;
 use Solinor\PaymentHighway\Tests\TestBase;
+use Solinor\PaymentHighway;
 
 class FormBuilderTest extends TestBase
 {
@@ -11,8 +12,8 @@ class FormBuilderTest extends TestBase
      * @test
      */
     public function addPaymentCard($method, $signatureKeyId, $signatureSecret, $account,
-                                              $merchant, $baseUrl, $successUrl, $failureUrl,
-                                              $cancelUrl, $language
+                                   $merchant, $baseUrl, $successUrl, $failureUrl,
+                                   $cancelUrl, $language
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -36,7 +37,8 @@ class FormBuilderTest extends TestBase
      */
     public function PaymentParameters($method, $signatureKeyId, $signatureSecret, $account,
                                       $merchant, $baseUrl, $successUrl, $failureUrl,
-                                      $cancelUrl, $language, $amount, $currency, $orderId, $description
+                                      $cancelUrl, $language, $amount, $currency, $orderId, $description,
+                                      $showPaymentSelector
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -45,12 +47,13 @@ class FormBuilderTest extends TestBase
             $cancelUrl, $language
         );
 
-        $form = $formbuilder->generatePaymentParameters($amount, $currency, $orderId, $description);
+        $form = $formbuilder->generatePaymentParameters($amount, $currency, $orderId, $description, null,
+            null, null, null, $showPaymentSelector);
 
         $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
         $this->assertEquals($baseUrl . '/form/view/pay_with_card', $form->getAction());
         $this->assertEquals($method, $form->getMethod());
-        $this->assertCount(13, $form->getParameters());
+        $this->assertCount(14, $form->getParameters());
     }
 
     /**
@@ -58,8 +61,8 @@ class FormBuilderTest extends TestBase
      * @test
      */
     public function addCardAndPayParameters($method, $signatureKeyId, $signatureSecret, $account,
-                                      $merchant, $baseUrl, $successUrl, $failureUrl,
-                                      $cancelUrl, $language, $amount, $currency, $orderId, $description
+                                            $merchant, $baseUrl, $successUrl, $failureUrl,
+                                            $cancelUrl, $language, $amount, $currency, $orderId, $description
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -107,10 +110,10 @@ class FormBuilderTest extends TestBase
      * @test
      */
     public function payWithMobilePay($method, $signatureKeyId, $signatureSecret,
-                                       $account, $merchant, $baseUrl,
-                                       $successUrl, $failureUrl, $cancelUrl,
-                                       $language, $amount,
-                                       $currency, $orderId, $description
+                                     $account, $merchant, $baseUrl,
+                                     $successUrl, $failureUrl, $cancelUrl,
+                                     $language, $amount,
+                                     $currency, $orderId, $description
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -132,9 +135,9 @@ class FormBuilderTest extends TestBase
      * @test
      */
     public function payWithMobilePayWithOptionalParameters($method, $signatureKeyId, $signatureSecret,
-                                     $account, $merchant, $baseUrl, $successUrl, $failureUrl, $cancelUrl,
-                                     $language, $amount, $currency, $orderId, $description, $shopLogoUrl,
-                                     $phoneNumber, $shopName, $subMerchantId, $subMerchantName
+                                                           $account, $merchant, $baseUrl, $successUrl, $failureUrl, $cancelUrl,
+                                                           $language, $amount, $currency, $orderId, $description, $shopLogoUrl,
+                                                           $phoneNumber, $shopName, $subMerchantId, $subMerchantName
     )
     {
         $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
@@ -150,6 +153,29 @@ class FormBuilderTest extends TestBase
         $this->assertEquals($baseUrl . '/form/view/mobilepay', $form->getAction());
         $this->assertEquals($method, $form->getMethod());
         $this->assertCount(17, $form->getParameters());
+    }
+
+    /**
+     * @dataProvider payWithMasterpassParameters
+     * @test
+     */
+    public function paymentWithMasterpass($method, $signatureKeyId, $signatureSecret, $account,
+                                          $merchant, $baseUrl, $successUrl, $failureUrl,
+                                          $cancelUrl, $language, $amount, $currency, $orderId, $description
+    )
+    {
+        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+            $method, $signatureKeyId, $signatureSecret, $account,
+            $merchant, $baseUrl, $successUrl, $failureUrl,
+            $cancelUrl, $language
+        );
+
+        $form = $formbuilder->generateMasterpassParameters($amount, $currency, $orderId, $description);
+
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/masterpass', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
+        $this->assertCount(13, $form->getParameters());
     }
 
     /**
@@ -193,7 +219,8 @@ class FormBuilderTest extends TestBase
                 '100',
                 'EUR',
                 '123',
-                'testitilaus'
+                'testitilaus',
+                false
             )
         );
     }
@@ -277,5 +304,13 @@ class FormBuilderTest extends TestBase
                 'subMerchantName'
             )
         );
+    }
+
+    /**
+     * @return array
+     */
+    public function payWithMasterpassParameters()
+    {
+        return $this->payWithCardParameters();
     }
 }

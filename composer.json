@@ -8,6 +8,10 @@
     {
       "name" : "Jonni Larjomaa",
       "email" : "jonni.larjomaa@solinor.com"
+    },
+    {
+      "name" : "Pauli Kostamo",
+      "email" : "pauli.kostamo@paymenthighway.fi"
     }
   ],
   "require": {
@@ -17,7 +21,7 @@
     "respect/validation": "^1.0"
   },
   "require-dev" : {
-    "phpunit/phpunit" : "4.8.*"
+    "phpunit/phpunit" : "^4.8"
   },
   "autoload" : {
     "psr-4": {

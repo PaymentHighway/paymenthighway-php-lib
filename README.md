@@ -94,7 +94,7 @@ $currency = "EUR";
 $orderId = "1000123A";
 $description = "A Box of Dreams. 19,90€";
 
-$form = formBuilder->generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description);
+$form = $formBuilder->generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description);
 ```
 
 
@@ -109,7 +109,7 @@ $shopLogoUrl = "https://foo.bar/biz.png";
 $phoneNumber = "+3581234567"; 
 $shopName = "Jaskan solki";
 		
-$form = formBuilder->generatePayWithMobilePayParameters(
+$form = $formBuilder->generatePayWithMobilePayParameters(
 		$amount, 
 		$currency, 
 		$orderId, 
@@ -219,17 +219,17 @@ $response = $paymentApi->revertTransaction("transactionId", "amount");
 
 ### Example Transaction Status
 ```php
-$status = paymentApi->statusTransaction( $transactionId );
+$status = $paymentApi->statusTransaction( $transactionId );
 ```
 
 ### Example Daily Batch Report
 ```php
-$response = paymentApi->getReport( $date ); //in "date('Y-M-D')" format
+$response = $paymentApi->getReport( $date ); //in "date('Y-M-D')" format
 ```
 
 ### Example Order Status
 ```php
-$response = paymentApi->searchByOrderId( $orderId );
+$response = $paymentApi->searchByOrderId( $orderId );
 ```	
 
 # Errors

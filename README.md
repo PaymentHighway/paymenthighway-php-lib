@@ -151,7 +151,7 @@ use Solinor\PaymentHighway\Security\SecureSigner;
 $secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
 
 try{
-    $secureSigner->validateFormRedirect($params)) { // redirected get params as [ key => value] array
+    $secureSigner->validateFormRedirect($params) // redirected get params as [ key => value] array
 }
 catch(Exception $e) {
     // Validation failed, handle here

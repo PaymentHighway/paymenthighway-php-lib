@@ -146,7 +146,7 @@ In addition, after the user is redirected to one of your provided success, failu
 
 ```php
 
-use Solinor\PaymentHighway\Model\Security\SecureSigner
+use Solinor\PaymentHighway\Security\SecureSigner
 
 $secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
 

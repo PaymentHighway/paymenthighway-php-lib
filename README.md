@@ -38,7 +38,7 @@ Start with building the HTTP form parameters by using the FormParameterBuilder. 
 
 ```php
 
-use \Solinor\PaymentHighway\FormBuilder
+use \Solinor\PaymentHighway\FormBuilder;
 
 $method = "POST";
 $signatureKeyId = "testKey";
@@ -146,7 +146,7 @@ In addition, after the user is redirected to one of your provided success, failu
 
 ```php
 
-use Solinor\PaymentHighway\Security\SecureSigner
+use Solinor\PaymentHighway\Security\SecureSigner;
 
 $secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
 
@@ -173,7 +173,7 @@ Code 100 means "Request successful". Other response codes can be found: [https:/
 ### Initializing the Payment API
 
 ```php
-use Solinor\PaymentHighway\PaymentApi
+use Solinor\PaymentHighway\PaymentApi;
 
 $serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
 $signatureKeyId = "testKey";

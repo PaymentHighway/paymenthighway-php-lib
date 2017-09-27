@@ -121,6 +121,8 @@ class FormBuilder {
 
         ksort($commonParameters, SORT_DESC);
 
+        $commonParameters = $this->booleans2Text($commonParameters);
+
         $signature = $this->createSecureSign(self::$ADD_CARD_URI, $commonParameters);
 
         $commonParameters[self::$LANGUAGE] = $this->language;
@@ -175,6 +177,8 @@ class FormBuilder {
 
         ksort($commonParameters, SORT_DESC);
 
+        $commonParameters = $this->booleans2Text($commonParameters);
+
         $signature = $this->createSecureSign(self::$PAYMENT_URI, $commonParameters);
 
         $commonParameters[self::$DESCRIPTION] = $description;
@@ -227,6 +231,8 @@ class FormBuilder {
 
         ksort($commonParameters, SORT_DESC);
 
+        $commonParameters = $this->booleans2Text($commonParameters);
+
         $signature = $this->createSecureSign(self::$ADD_AND_PAY_URI, $commonParameters);
 
         $commonParameters[self::$DESCRIPTION] = $description;
@@ -278,6 +284,8 @@ class FormBuilder {
         $commonParameters[self::$DESCRIPTION] = $description;
 
         ksort($commonParameters,SORT_DESC);
+
+        $commonParameters = $this->booleans2Text($commonParameters);
 
         $signature = $this->createSecureSign(self::$CVC_AND_TOKEN_URI,$commonParameters);
 
@@ -340,6 +348,8 @@ class FormBuilder {
 
         ksort($commonParameters,SORT_DESC);
 
+        $commonParameters = $this->booleans2Text($commonParameters);
+
         $signature = $this->createSecureSign(self::$MOBILE_PAY_URI,$commonParameters);
 
         $commonParameters[self::$SIGNATURE] = $signature;
@@ -389,6 +399,8 @@ class FormBuilder {
 
         ksort($commonParameters, SORT_DESC);
 
+        $commonParameters = $this->booleans2Text($commonParameters);
+
         $signature = $this->createSecureSign(self::$PAYMENT_URI, $commonParameters);
 
         $commonParameters[self::$DESCRIPTION] = $description;
@@ -436,6 +448,18 @@ class FormBuilder {
         );
 
         return $parameterArray;
+    }
+
+    /**
+     * @param array $parameters
+     * @return array
+     */
+    private function booleans2Text(array $parameters) {
+        $translatedArray = array();
+        foreach( $parameters as $key => $value) {
+            $translatedArray[$key] = is_bool($value) ? ($value ? "true" : "false") : $value;
+        }
+        return $translatedArray;
     }
 
     /**

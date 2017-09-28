@@ -401,7 +401,7 @@ class FormBuilder {
 
         $commonParameters = $this->booleans2Text($commonParameters);
 
-        $signature = $this->createSecureSign(self::$PAYMENT_URI, $commonParameters);
+        $signature = $this->createSecureSign(self::$MASTERPASS_PAY_URI, $commonParameters);
 
         $commonParameters[self::$DESCRIPTION] = $description;
         $commonParameters[self::$LANGUAGE] = $this->language;

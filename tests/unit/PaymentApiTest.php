@@ -9,7 +9,7 @@ class PaymentApiTest extends TestBase
 {
 
     const ValidExpiryMonth = '11';
-    const ValidExpiryYear = '2017';
+    const ValidExpiryYear = '2023';
     const ValidPan = '4153013999700024';
     const ValidCvc = '024';
     const ValidType = 'Visa';

@@ -418,20 +418,16 @@ class FormBuilder {
     /**
      * Get parameters for Siirto request.
      *
-     * @param string successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-     * @param string failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
-     * @param string cancelUrl             The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-     * @param string language              The language the form is displayed in.
-     * @param string amount                The amount to pay. Siirto supports only euros.
-     * @param string orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
-     * @param string description           Description of the payment shown in the form.
-     * @param string phoneNumber           User phone number with country code. Max AN 15. Optional
-     * @param string referenceNumber       Reference number
-     * @param bool exitIframeOnResult
-     * @param string webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
-     * @param string webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
-     * @param string webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
-     * @param string webhookDelay          Delay for webhook in seconds. Between 0-900
+     * @param string $amount                The amount to pay in euro cents. Siirto supports only euros.
+     * @param string $orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+     * @param string $description           Description of the payment shown in the form.
+     * @param string $phoneNumber           User phone number with country code. Max AN 15. Optional
+     * @param string $referenceNumber       Reference number
+     * @param bool $exitIframeOnResult
+     * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+     * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
+     * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+     * @param string $webhookDelay          Delay for webhook in seconds. Between 0-900
      * @return Form
      */
     public function generateSiirtoParameters($amount, $orderId, $description, $phoneNumber = null, $referenceNumber = null,

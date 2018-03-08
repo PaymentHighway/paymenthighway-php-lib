@@ -37,7 +37,7 @@ class FormBuilder {
     static $SPH_WEBHOOK_DELAY = "sph-webhook-delay";
     static $SPH_SHOW_PAYMENT_METHOD_SELECTOR = "sph-show-payment-method-selector";
     static $SPH_PHONE_NUMBER = "sph-phone-number";
-    static $SPH_REFERENCE = "sph-reference";
+    static $SPH_REFERENCE_NUMBER = "sph-reference-number";
     static $SPH_APP_URL = "sph-app-url";
 
 
@@ -423,7 +423,7 @@ class FormBuilder {
      * @param string $orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
      * @param string $description           Description of the payment shown in the form.
      * @param string $phoneNumber           User phone number with country code. Max AN 15. Optional
-     * @param string $reference             Reference
+     * @param string $referenceNumber       Reference number
      * @param bool $exitIframeOnResult
      * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
@@ -431,7 +431,7 @@ class FormBuilder {
      * @param string $webhookDelay          Delay for webhook in seconds. Between 0-900
      * @return Form
      */
-    public function generateSiirtoParameters($amount, $orderId, $description, $phoneNumber = null, $reference = null,
+    public function generateSiirtoParameters($amount, $orderId, $description, $phoneNumber = null, $referenceNumber = null,
                                              $exitIframeOnResult = null, $webhookSuccessUrl = null, $webhookFailureUrl = null,
                                              $webhookCancelUrl = null, $webhookDelay = null)
     {
@@ -445,8 +445,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
         if(!is_null($phoneNumber))
             $commonParameters[self::$SPH_PHONE_NUMBER] = $phoneNumber;
-        if(!is_null($reference))
-            $commonParameters[self::$SPH_REFERENCE] = $reference;
+        if(!is_null($referenceNumber))
+            $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
 
         $commonParameters = array_merge($commonParameters,
             $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
@@ -471,7 +471,7 @@ class FormBuilder {
      * @param string $orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
      * @param string $description           Description of the payment shown in the form.
      * @param string $phoneNumber           User phone number with country code. Max AN 15. Optional
-     * @param string $reference             Reference
+     * @param string $referenceNumber       Reference
      * @param bool $exitIframeOnResult
      * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
@@ -479,9 +479,9 @@ class FormBuilder {
      * @param string $webhookDelay          Delay for webhook in seconds. Between 0-900
      * @return Form
      */
-    public function generatePivoParameters($amount, $orderId, $description, $phoneNumber = null, $reference = null, $appUrl = null,
-                                             $exitIframeOnResult = null, $webhookSuccessUrl = null, $webhookFailureUrl = null,
-                                             $webhookCancelUrl = null, $webhookDelay = null)
+    public function generatePivoParameters($amount, $orderId, $description, $phoneNumber = null, $referenceNumber = null, $appUrl = null,
+                                           $exitIframeOnResult = null, $webhookSuccessUrl = null, $webhookFailureUrl = null,
+                                           $webhookCancelUrl = null, $webhookDelay = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -493,8 +493,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
         if(!is_null($phoneNumber))
             $commonParameters[self::$SPH_PHONE_NUMBER] = $phoneNumber;
-        if(!is_null($reference))
-            $commonParameters[self::$SPH_REFERENCE] = $reference;
+        if(!is_null($referenceNumber))
+            $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
         if(!is_null($appUrl))
             $commonParameters[self::$SPH_APP_URL] = $appUrl;
         $commonParameters = array_merge($commonParameters,

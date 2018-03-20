@@ -83,6 +83,7 @@ class PaymentApi
      * @param $currency
      * @return Response
      * @throws \Httpful\Exception\ConnectionErrorException
+     * @throws Model\Request\Exception
      */
     public function commitFormTransaction($transactionId, $amount, $currency)
     {
@@ -104,6 +105,29 @@ class PaymentApi
         return $this->makeRequest(self::$METHOD_POST, $uri, $transaction);
     }
 
+    /**
+     * Used to find out whether or not an uncommitted transaction succeeded, without actually committing (capturing) it.
+     * @param string|UUID $transactionId
+     * @return Response
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function transactionResult($transactionId)
+    {
+        $uri = '/transaction/' . $transactionId . '/result';
+        return $this->makeRequest(self::$METHOD_GET, $uri);
+    }
+
+    /**
+     * Used to find out whether or not an Siirto transaction succeeded.
+     * @param string|UUID $transactionId
+     * @return Response
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function siirtoTransactionResult($transactionId)
+    {
+        $uri = '/transaction/' . $transactionId . '/siirto/result';
+        return $this->makeRequest(self::$METHOD_GET, $uri);
+    }
 
     /**
      * @param string $transactionId
@@ -115,6 +139,19 @@ class PaymentApi
     {
         $uri = '/transaction/' . $transactionId . '/revert';
         return $this->makeRequest(self::$METHOD_POST, $uri, array('amount' => $amount));
+    }
+
+    /**
+     * @param string $transactionId
+     * @param string $referenceNumber
+     * @param string $amount
+     * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function revertSiirtoTransaction($transactionId, $referenceNumber, $amount)
+    {
+        $uri = '/transaction/' . $transactionId . '/siirto/revert';
+        return $this->makeRequest(self::$METHOD_POST, $uri, array('reference_number' => $referenceNumber, 'amount' => $amount));
     }
 
     /**
@@ -156,6 +193,7 @@ class PaymentApi
     /**
      * @param $tokenizeId
      * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function tokenize($tokenizeId)
     {
@@ -179,6 +217,7 @@ class PaymentApi
      * @param string $date in format yyyyMMdd. The date to fetch the reconciliation report for.
      * @param bool $useDateProcessed Use the acquirer processed date instead of report received date. Might cause changes to the past
      * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
     public function fetchReconciliationReport($date, $useDateProcessed = false)
     {
@@ -226,6 +265,7 @@ class PaymentApi
      * @param $uri
      * @param null $body
      * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
      */
     private function makeRequest($method, $uri, $body = null)
     {

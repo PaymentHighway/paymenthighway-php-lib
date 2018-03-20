@@ -472,6 +472,7 @@ class FormBuilder {
      * @param string $description           Description of the payment shown in the form.
      * @param string $phoneNumber           User phone number with country code. Max AN 15. Optional
      * @param string $referenceNumber       Reference number
+     * @param string $appUrl                When used, Pivo tries to open application with this url. Optional.
      * @param bool $exitIframeOnResult
      * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.

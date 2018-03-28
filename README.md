@@ -1,5 +1,5 @@
 # PaymentHighway PHP SDK
-
+[![Build Status](https://travis-ci.org/PaymentHighway/paymenthighway-php-lib.svg?branch=master)](https://travis-ci.org/PaymentHighway/paymenthighway-php-lib)
 ## Requirements
 
 * PHP 5.4.+

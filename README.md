@@ -1,5 +1,6 @@
 # PaymentHighway PHP SDK
-[![Build Status](https://travis-ci.org/PaymentHighway/paymenthighway-php-lib.svg?branch=master)](https://travis-ci.org/PaymentHighway/paymenthighway-php-lib)
+[![][Build Status img]][Build Status]
+
 ## Requirements
 
 * PHP 5.4.+
@@ -245,3 +246,6 @@ catch (Exception $e) {
 
 # Help us make it better
 Please tell us how we can make the API better. If you have a specific feature request or if you found a bug, please use GitHub issues. Fork these docs and send a pull request with improvements.
+
+[Build Status]:https://travis-ci.org/PaymentHighway/paymenthighway-php-lib
+[Build Status img]:https://travis-ci.org/PaymentHighway/paymenthighway-php-lib.svg?branch=master

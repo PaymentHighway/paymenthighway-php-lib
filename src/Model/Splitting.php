@@ -5,8 +5,7 @@
  * Splits the payment into sub-merchant settlement and the main merchant commission. Requires separate activation.
  * @package Solinor\PaymentHighway\Model
  */
-
-class Splitting implements \JsonSerializable
+class Splitting extends JsonSerializable
 {
     public $merchant_id = null;
     public $amount = null;
@@ -19,23 +18,5 @@ class Splitting implements \JsonSerializable
     {
         $this->merchant_id = $merchant_id;
         $this->amount = $amount;
-    }
-
-    /**
-     * Specify data which should be serialized to JSON
-     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize()
-    {
-        $data = get_object_vars($this);
-
-        foreach($data as $key => $val)
-            if($val === null)
-                unset($data[$key]);
-
-        return $data;
     }
 }

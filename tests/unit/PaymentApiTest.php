@@ -171,7 +171,6 @@ class PaymentApiTest extends TestBase
      * @depends      paymentApiExists
      * @test
      * @param PaymentApi $api
-     * @param string $transactionId
      * @return string transactionId
      */
     public function splittingDetailsAreReturnedInTransactionStatus(PaymentApi $api)

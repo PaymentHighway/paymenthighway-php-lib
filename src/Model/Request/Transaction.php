@@ -17,6 +17,7 @@ class Transaction implements \JsonSerializable
 
     public $token = null;
     public $card = null;
+    public $splitting = null;
 
     /**
      * @param int $amount
@@ -24,14 +25,16 @@ class Transaction implements \JsonSerializable
      * @param Card|Token|null $request
      * @param bool $blocking
      * @param string $orderId
+     * @param Splitting $splitting
      * @throws Exception
      */
-    public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null )
+    public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null, $splitting = null )
     {
         $this->amount = $amount;
         $this->currency = $currency;
         $this->order = $orderId;
         $this->blocking = $blocking;
+        $this->splitting = $splitting;
 
         $this->setRequestByType($request);
     }

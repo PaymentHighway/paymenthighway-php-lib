@@ -55,7 +55,7 @@ class PaymentApi
      * @param string $merchant
      * @param string $apiversion
      */
-    public function __construct($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant, $apiversion = "20160630")
+    public function __construct($serviceUrl, $signatureKeyId, $signatureSecret, $account, $merchant, $apiversion = "20180426")
     {
         $this->serviceUrl = $serviceUrl;
         $this->signatureKeyId = $signatureKeyId;

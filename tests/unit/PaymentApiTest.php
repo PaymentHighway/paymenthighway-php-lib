@@ -94,7 +94,7 @@ class PaymentApiTest extends TestBase
     public function transactionStatus(PaymentApi $api, $transactionId )
     {
 
-        $card = $this->getValidCard();
+        $card = $this->getValidCardTransactionRequest();
 
         $api->debitTransaction( $transactionId, $card)->body;
 

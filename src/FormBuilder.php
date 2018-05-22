@@ -422,8 +422,8 @@ class FormBuilder {
      * @param string $amount                The amount to pay in euro cents. Siirto supports only euros.
      * @param string $orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
      * @param string $description           Description of the payment shown in the form.
-     * @param string $phoneNumber           User phone number with country code. Max AN 15. Optional
      * @param string $referenceNumber       Reference number
+     * @param string $phoneNumber           User phone number with country code. Max AN 15. Optional
      * @param bool $exitIframeOnResult
      * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
@@ -431,7 +431,7 @@ class FormBuilder {
      * @param string $webhookDelay          Delay for webhook in seconds. Between 0-900
      * @return Form
      */
-    public function generateSiirtoParameters($amount, $orderId, $description, $phoneNumber = null, $referenceNumber = null,
+    public function generateSiirtoParameters($amount, $orderId, $description, $referenceNumber, $phoneNumber = null,
                                              $exitIframeOnResult = null, $webhookSuccessUrl = null, $webhookFailureUrl = null,
                                              $webhookCancelUrl = null, $webhookDelay = null)
     {
@@ -440,13 +440,12 @@ class FormBuilder {
         $commonParameters[self::$SPH_AMOUNT] = $amount;
         $commonParameters[self::$SPH_CURRENCY] = "EUR";
         $commonParameters[self::$SPH_ORDER] = $orderId;
+        $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
 
         if(!is_null($exitIframeOnResult))
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
         if(!is_null($phoneNumber))
             $commonParameters[self::$SPH_PHONE_NUMBER] = $phoneNumber;
-        if(!is_null($referenceNumber))
-            $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
 
         $commonParameters = array_merge($commonParameters,
             $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
@@ -470,8 +469,8 @@ class FormBuilder {
      * @param string $amount                The amount to pay in euro cents. Pivo supports only euros.
      * @param string $orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
      * @param string $description           Description of the payment shown in the form.
-     * @param string $phoneNumber           User phone number with country code. Max AN 15. Optional
      * @param string $referenceNumber       Reference number
+     * @param string $phoneNumber           User phone number with country code. Max AN 15. Optional
      * @param string $appUrl                When used, Pivo tries to open application with this url. Optional.
      * @param bool $exitIframeOnResult
      * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
@@ -480,7 +479,7 @@ class FormBuilder {
      * @param string $webhookDelay          Delay for webhook in seconds. Between 0-900
      * @return Form
      */
-    public function generatePivoParameters($amount, $orderId, $description, $phoneNumber = null, $referenceNumber = null, $appUrl = null,
+    public function generatePivoParameters($amount, $orderId, $description, $referenceNumber = null,  $phoneNumber = null, $appUrl = null,
                                            $exitIframeOnResult = null, $webhookSuccessUrl = null, $webhookFailureUrl = null,
                                            $webhookCancelUrl = null, $webhookDelay = null)
     {

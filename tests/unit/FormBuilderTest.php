@@ -521,8 +521,8 @@ class FormBuilderTest extends TestBase
                 '100',
                 '123',
                 'testitilaus',
-                '+3581234567',
-                '1313'
+                '1313',
+                '+3581234567'
             )
         );
     }
@@ -547,8 +547,8 @@ class FormBuilderTest extends TestBase
                 '100',
                 '123',
                 'testitilaus',
-                '+3581234567',
                 '1313',
+                '+3581234567',
                 'app://url'
             )
         );

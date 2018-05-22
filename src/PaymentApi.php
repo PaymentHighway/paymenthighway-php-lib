@@ -156,6 +156,19 @@ class PaymentApi
 
     /**
      * @param string $transactionId
+     * @param string $referenceNumber
+     * @param string $amount
+     * @return \Httpful\Response
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function revertPivoTransaction($transactionId, $referenceNumber, $amount)
+    {
+        $uri = '/transaction/' . $transactionId . '/pivo/revert';
+        return $this->makeRequest(self::$METHOD_POST, $uri, array('reference_number' => $referenceNumber, 'amount' => $amount));
+    }
+
+    /**
+     * @param string $transactionId
      * @return \Httpful\Response
      * @throws \Httpful\Exception\ConnectionErrorException
      */

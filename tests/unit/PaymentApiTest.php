@@ -2,6 +2,7 @@
 
 use Solinor\PaymentHighway\Model\Card;
 use Solinor\PaymentHighway\Model\Request\Transaction;
+use Solinor\PaymentHighway\Model\Splitting;
 use Solinor\PaymentHighway\PaymentApi;
 use Solinor\PaymentHighway\Tests\TestBase;
 
@@ -72,7 +73,7 @@ class PaymentApiTest extends TestBase
     public function debitTransactionSuccess(PaymentApi $api, $transactionId )
     {
 
-        $card = $this->getValidCard();
+        $card = $this->getValidCardTransactionRequest();
 
         $response = $api->debitTransaction( $transactionId, $card)->body;
 
@@ -167,9 +168,39 @@ class PaymentApiTest extends TestBase
     }
 
     /**
-     * @return Card
+     * @depends      paymentApiExists
+     * @test
+     * @param PaymentApi $api
+     * @return string transactionId
      */
-    private function getValidCard()
+    public function splittingDetailsAreReturnedInTransactionStatus(PaymentApi $api)
+    {
+        $transactionId = $api->initTransaction()->body->id;
+
+        $subMerchantId = "12345";
+        $amountToSubMerchant = 90;
+
+        $splitting = new Splitting($subMerchantId, $amountToSubMerchant);
+
+        $transactionRequest = $this->getValidCardTransactionRequest($splitting);
+
+        $debitResponse = $api->debitTransaction($transactionId, $transactionRequest)->body;
+
+        $this->assertEquals('100', $debitResponse->result->code);
+
+        $statusResponse = $api->statusTransaction($transactionId)->body;
+
+        $this->assertEquals($subMerchantId, $statusResponse->transaction->splitting->merchant_id);
+        $this->assertEquals($amountToSubMerchant, $statusResponse->transaction->splitting->amount);
+
+        return $transactionId;
+    }
+
+    /**
+     * @param Splitting $splitting
+     * @return Transaction
+     */
+    private function getValidCardTransactionRequest($splitting = null)
     {
         return new Transaction(
             new Card(
@@ -181,7 +212,8 @@ class PaymentApiTest extends TestBase
             99,
             'EUR',
             true,
-            self::$orderId
+            self::$orderId,
+            $splitting
         );
     }
 }

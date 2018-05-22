@@ -6,7 +6,7 @@
  * @package Solinor\PaymentHighway\Model
  */
 
-class Card implements \JsonSerializable
+class Card extends JsonSerializable
 {
     public $pan = null;
     public $expiry_year = null;
@@ -28,23 +28,5 @@ class Card implements \JsonSerializable
         $this->expiry_month = $expiry_month;
         $this->cvc = $cvc;
         $this->verification = $verification;
-    }
-
-    /**
-     * Specify data which should be serialized to JSON
-     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize()
-    {
-        $data = get_object_vars($this);
-
-        foreach($data as $key => $val)
-            if($val === null)
-                unset($data[$key]);
-
-        return $data;
     }
 }

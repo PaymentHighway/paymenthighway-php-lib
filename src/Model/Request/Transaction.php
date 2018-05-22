@@ -8,7 +8,7 @@ use Solinor\PaymentHighway\Model\Card;
  * @package Solinor\PaymentHighway\Model\Request
  */
 
-class Transaction implements \JsonSerializable
+class Transaction extends \Solinor\PaymentHighway\Model\JsonSerializable
 {
     public $amount = null;
     public $currency = null;
@@ -17,6 +17,7 @@ class Transaction implements \JsonSerializable
 
     public $token = null;
     public $card = null;
+    public $splitting = null;
 
     /**
      * @param int $amount
@@ -24,14 +25,16 @@ class Transaction implements \JsonSerializable
      * @param Card|Token|null $request
      * @param bool $blocking
      * @param string $orderId
+     * @param Splitting $splitting
      * @throws Exception
      */
-    public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null )
+    public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null, $splitting = null )
     {
         $this->amount = $amount;
         $this->currency = $currency;
         $this->order = $orderId;
         $this->blocking = $blocking;
+        $this->splitting = $splitting;
 
         $this->setRequestByType($request);
     }
@@ -47,23 +50,5 @@ class Transaction implements \JsonSerializable
         elseif( $request instanceof Card ){
             $this->card = $request;
         }
-    }
-
-    /**
-     * Specify data which should be serialized to JSON
-     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize()
-    {
-        $data = get_object_vars($this);
-
-        foreach($data as $key => $val)
-            if($val === null)
-                unset($data[$key]);
-
-        return $data;
     }
 }

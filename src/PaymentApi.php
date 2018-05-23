@@ -130,6 +130,18 @@ class PaymentApi
     }
 
     /**
+     * Used to find out whether or not an Pivo transaction succeeded.
+     * @param string|UUID $transactionId
+     * @return Response
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function pivoTransactionResult($transactionId)
+    {
+        $uri = '/transaction/' . $transactionId . '/pivo/result';
+        return $this->makeRequest(self::$METHOD_GET, $uri);
+    }
+
+    /**
      * @param string $transactionId
      * @param string $amount
      * @return \Httpful\Response

@@ -106,6 +106,19 @@ class PaymentApi
     }
 
     /**
+     * Charge the credit card with a merchant initiated transaction
+     * @param string|UUID $transactionId
+     * @param Transaction $transaction
+     * @return Response
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function chargeMerchantInitiatedTransaction($transactionId, Transaction $transaction)
+    {
+        $uri = '/transaction/' . $transactionId . '/card/charge/merchant_initiated';
+        return $this->makeRequest(self::$METHOD_POST, $uri, $transaction);
+    }
+
+    /**
      * Used to find out whether or not an uncommitted transaction succeeded, without actually committing (capturing) it.
      * @param string|UUID $transactionId
      * @return Response

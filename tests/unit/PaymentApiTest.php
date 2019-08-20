@@ -35,7 +35,7 @@ class PaymentApiTest extends TestBase
      */
     public function paymentApiExists()
     {
-        $api = new PaymentApi('https://v1-hub-staging.sph-test-solinor.com/',  'testKey',  'testSecret',  'test',  'test_merchantId');
+        $api = new PaymentApi('https://v1-hub-psd2.sph-test-solinor.com/',  'testKey',  'testSecret',  'test',  'test_merchantId');
 
         $this->assertInstanceOf('Solinor\PaymentHighway\PaymentApi',$api);
 
@@ -76,6 +76,27 @@ class PaymentApiTest extends TestBase
         $card = $this->getValidCardTransactionRequest();
 
         $response = $api->debitTransaction( $transactionId, $card)->body;
+
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
+        return $transactionId;
+    }
+
+    /**
+     * @depends      paymentApiExists
+     * @depends      initHandlerSuccessfully
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     * @return string transactionId
+     */
+    public function chargeMerchantInitiatedTransactionSuccess(PaymentApi $api, $transactionId )
+    {
+
+        $card = $this->getValidCardTransactionRequest();
+
+        $response = $api->chargeMerchantInitiatedTransaction( $transactionId, $card)->body;
 
         $this->assertEquals('100', $response->result->code);
         $this->assertEquals('OK', $response->result->message);

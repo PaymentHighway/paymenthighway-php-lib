@@ -18,6 +18,12 @@ class PaymentApiTest extends TestBase
     const ValidCvc = '024';
     const ValidType = 'Visa';
 
+    const SoftDeclineExpiryMonth = '11';
+    const SoftDeclineExpiryYear = '2023';
+    const SoftDeclinePan = '4153013999701162';
+    const SoftDeclineCvc = '162';
+    const SoftDeclineType = 'Visa';
+
     const InvalidExpiryMonth = '10';
     const InvalidExpiryYear = '2014';
     const InvalidPan = '415301399900024';
@@ -79,48 +85,6 @@ class PaymentApiTest extends TestBase
         $card = $this->getValidCardTransactionRequest();
 
         $response = $api->debitTransaction( $transactionId, $card)->body;
-
-        $this->assertEquals('100', $response->result->code);
-        $this->assertEquals('OK', $response->result->message);
-
-        return $transactionId;
-    }
-
-    /**
-     * @depends      paymentApiExists
-     * @depends      initHandlerSuccessfully
-     * @test
-     * @param PaymentApi $api
-     * @param string $transactionId
-     * @return string transactionId
-     */
-    public function chargeMerchantInitiatedTransactionSuccess(PaymentApi $api, $transactionId )
-    {
-
-        $card = $this->getValidCardTransactionRequest();
-
-        $response = $api->chargeMerchantInitiatedTransaction( $transactionId, $card)->body;
-
-        $this->assertEquals('100', $response->result->code);
-        $this->assertEquals('OK', $response->result->message);
-
-        return $transactionId;
-    }
-
-    /**
-     * @depends      paymentApiExists
-     * @depends      initHandlerSuccessfully
-     * @test
-     * @param PaymentApi $api
-     * @param string $transactionId
-     * @return string transactionId
-     */
-    public function chargeCustomerInitiatedTransactionSuccess(PaymentApi $api, $transactionId )
-    {
-
-        $card = $this->getValidCustomerInitiatedTransactionRequest();
-
-        $response = $api->chargeCustomerInitiatedTransaction( $transactionId, $card)->body;
 
         $this->assertEquals('100', $response->result->code);
         $this->assertEquals('OK', $response->result->message);
@@ -222,6 +186,69 @@ class PaymentApiTest extends TestBase
     }
 
     /**
+     * @depends      paymentApiExists
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     * @return string transactionId
+     */
+    public function chargeMerchantInitiatedTransactionSuccess(PaymentApi $api)
+    {
+        $transactionId = $api->initTransaction()->body->id;
+
+        $card = $this->getValidCardTransactionRequest();
+
+        $response = $api->chargeMerchantInitiatedTransaction( $transactionId, $card)->body;
+
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
+        return $transactionId;
+    }
+
+    /**
+     * @depends      paymentApiExists
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     * @return string transactionId
+     */
+    public function chargeCustomerInitiatedTransactionSuccess(PaymentApi $api)
+    {
+        $transactionId = $api->initTransaction()->body->id;
+
+        $card = $this->getValidCustomerInitiatedTransactionRequest();
+
+        $response = $api->chargeCustomerInitiatedTransaction( $transactionId, $card)->body;
+
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
+        return $transactionId;
+    }
+
+    /**
+     * @depends      paymentApiExists
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     * @return string transactionId
+     */
+    public function chargeCustomerInitiatedTransactionSoftDecline(PaymentApi $api)
+    {
+        $transactionId = $api->initTransaction()->body->id;
+
+        $card = $this->getSoftDeclineCustomerInitiatedTransactionRequest();
+
+        $response = $api->chargeCustomerInitiatedTransaction( $transactionId, $card)->body;
+
+        $this->assertEquals('400', $response->result->code);
+        $this->assertNotNull($response->three_d_secure_url);
+
+        return $tranId;
+    }
+
+    /**
      * @test
      * @depends paymentApiExists
      */
@@ -299,6 +326,34 @@ class PaymentApiTest extends TestBase
                 self::ValidExpiryYear,
                 self::ValidExpiryMonth,
                 self::ValidCvc
+            ),
+            99,
+            'EUR',
+            new StrongCustomerAuthentication(
+                new ReturnUrls(
+                    "https://example.com/success",
+                    "https://example.com/cancel",
+                    "https://example.com/failure"
+                )
+            ),
+            true,
+            self::$orderId,
+            $splitting
+        );
+    }
+
+    /**
+     * @param Splitting $splitting
+     * @return CustomerInitiatedTransaction
+     */
+    private function getSoftDeclineCustomerInitiatedTransactionRequest($splitting = null)
+    {
+        return new CustomerInitiatedTransaction(
+            new Card(
+                self::SoftDeclinePan,
+                self::SoftDeclineExpiryYear,
+                self::SoftDeclineExpiryMonth,
+                self::SoftDeclineCvc
             ),
             99,
             'EUR',

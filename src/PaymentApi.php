@@ -3,6 +3,7 @@
 use Httpful\Request;
 use Httpful\Response;
 use Solinor\PaymentHighway\Model\Request\Transaction;
+use Solinor\PaymentHighway\Model\Request\CustomerInitiatedTransaction;
 use Solinor\PaymentHighway\Security\SecureSigner;
 use Respect\Validation\Validator;
 
@@ -115,6 +116,19 @@ class PaymentApi
     public function chargeMerchantInitiatedTransaction($transactionId, Transaction $transaction)
     {
         $uri = '/transaction/' . $transactionId . '/card/charge/merchant_initiated';
+        return $this->makeRequest(self::$METHOD_POST, $uri, $transaction);
+    }
+
+     /**
+     * Charge the credit card with a customer initiated transaction
+     * @param string|UUID $transactionId
+     * @param CustomerInitiatedTransaction $transaction
+     * @return Response
+     * @throws \Httpful\Exception\ConnectionErrorException
+     */
+    public function chargeCustomerInitiatedTransaction($transactionId, CustomerInitiatedTransaction $transaction)
+    {
+        $uri = '/transaction/' . $transactionId . '/card/charge/customer_initiated';
         return $this->makeRequest(self::$METHOD_POST, $uri, $transaction);
     }
 

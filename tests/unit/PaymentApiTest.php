@@ -2,6 +2,9 @@
 
 use Solinor\PaymentHighway\Model\Card;
 use Solinor\PaymentHighway\Model\Request\Transaction;
+use Solinor\PaymentHighway\Model\Request\CustomerInitiatedTransaction;
+use Solinor\PaymentHighway\Model\Sca\StrongCustomerAuthentication;
+use Solinor\PaymentHighway\Model\Sca\ReturnUrls;
 use Solinor\PaymentHighway\Model\Splitting;
 use Solinor\PaymentHighway\PaymentApi;
 use Solinor\PaymentHighway\Tests\TestBase;
@@ -97,6 +100,27 @@ class PaymentApiTest extends TestBase
         $card = $this->getValidCardTransactionRequest();
 
         $response = $api->chargeMerchantInitiatedTransaction( $transactionId, $card)->body;
+
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
+        return $transactionId;
+    }
+
+    /**
+     * @depends      paymentApiExists
+     * @depends      initHandlerSuccessfully
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     * @return string transactionId
+     */
+    public function chargeCustomerInitiatedTransactionSuccess(PaymentApi $api, $transactionId )
+    {
+
+        $card = $this->getValidCustomerInitiatedTransactionRequest();
+
+        $response = $api->chargeCustomerInitiatedTransaction( $transactionId, $card)->body;
 
         $this->assertEquals('100', $response->result->code);
         $this->assertEquals('OK', $response->result->message);
@@ -257,6 +281,34 @@ class PaymentApiTest extends TestBase
             ),
             99,
             'EUR',
+            true,
+            self::$orderId,
+            $splitting
+        );
+    }
+
+    /**
+     * @param Splitting $splitting
+     * @return CustomerInitiatedTransaction
+     */
+    private function getValidCustomerInitiatedTransactionRequest($splitting = null)
+    {
+        return new CustomerInitiatedTransaction(
+            new Card(
+                self::ValidPan,
+                self::ValidExpiryYear,
+                self::ValidExpiryMonth,
+                self::ValidCvc
+            ),
+            99,
+            'EUR',
+            new StrongCustomerAuthentication(
+                new ReturnUrls(
+                    "https://example.com/success",
+                    "https://example.com/cancel",
+                    "https://example.com/failure"
+                )
+            ),
             true,
             self::$orderId,
             $splitting

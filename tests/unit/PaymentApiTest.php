@@ -284,7 +284,7 @@ class PaymentApiTest extends TestBase
         $this->assertEquals('400', $response->result->code);
         $this->assertNotNull($response->three_d_secure_url);
 
-        return $tranId;
+        return $transactionId;
     }
 
     /**

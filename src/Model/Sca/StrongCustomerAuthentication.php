@@ -25,9 +25,9 @@ class StrongCustomerAuthentication extends \Solinor\PaymentHighway\Model\JsonSer
      * @param Purchase $purchase
      * @param Address $billing_address
      * @param Address $shipping_address
-     * @param some $desired_challenge_window_size
-     * @param some $exit_iframe_on_result
-     * @param some $exit_iframe_on_three_d_secure
+     * @param string $desired_challenge_window_size
+     * @param boolean $exit_iframe_on_result
+     * @param boolean $exit_iframe_on_three_d_secure
      */
     public function __construct(
         $return_urls,
@@ -50,6 +50,20 @@ class StrongCustomerAuthentication extends \Solinor\PaymentHighway\Model\JsonSer
         $this->exit_iframe_on_result = $exit_iframe_on_result;
         $this->exit_iframe_on_three_d_secure = $exit_iframe_on_three_d_secure ;
     }
+}
 
-
+/**
+ * Desired challenge window size for 3DS 2.x.
+ * 01 = 250 x 400
+ * 02 = 390 x 400
+ * 03 = 500 x 600
+ * 04 = 600 x 400
+ * 05 = Full screen
+ */
+abstract class ChallengeWindowSize {
+    const Window250x400 = "01";
+    const Window390x400 = "02";
+    const Window500x600 = "03";
+    const Window600x400 = "04";
+    const FullScreen = "05";
 }

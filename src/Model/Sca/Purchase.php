@@ -10,7 +10,7 @@ class Purchase extends \Solinor\PaymentHighway\Model\JsonSerializable
 {
     public $shipping_indicator = null;
     public $delivery_time_frame = null;
-    public $email = null;
+    public $delivery_email = null;
     public $reorder_items_indicator = null;
     public $pre_order_purchase_indicator = null;
     public $pre_order_date = null;
@@ -19,7 +19,7 @@ class Purchase extends \Solinor\PaymentHighway\Model\JsonSerializable
     /**
      * @param string $shipping_indicator
      * @param string $delivery_time_frame
-     * @param string $email max length 254
+     * @param string $delivery_email max length 254
      * @param string $reorder_items_indicator
      * @param string $pre_order_purchase_indicator
      * @param string $pre_order_date For a pre-ordered purchase, the expected date that the merchandise will be available
@@ -28,7 +28,7 @@ class Purchase extends \Solinor\PaymentHighway\Model\JsonSerializable
     public function __construct(
         $shipping_indicator = null,
         $delivery_time_frame = null,
-        $email = null,
+        $delivery_email = null,
         $reorder_items_indicator = null,
         $pre_order_purchase_indicator = null,
         $pre_order_date = null,
@@ -36,7 +36,7 @@ class Purchase extends \Solinor\PaymentHighway\Model\JsonSerializable
     ){
         $this->shipping_indicator = $shipping_indicator;
         $this->delivery_time_frame = $delivery_time_frame;
-        $this->email = $email;
+        $this->delivery_email = $delivery_email;
         $this->reorder_items_indicator = $reorder_items_indicator;
         $this->pre_order_purchase_indicator = $pre_order_purchase_indicator;
         $this->pre_order_date = $pre_order_date;

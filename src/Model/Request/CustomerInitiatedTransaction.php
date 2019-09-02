@@ -25,11 +25,11 @@ class CustomerInitiatedTransaction extends \Solinor\PaymentHighway\Model\JsonSer
      * @param Card|Token|null $request
      * @param int $amount
      * @param string $currency
-     * @param StrongCustomerAuthentication $strong_customer_authentication
+     * @param \Solinor\PaymentHighway\Model\Sca\StrongCustomerAuthentication $strong_customer_authentication
      * @param bool $blocking
      * @param string $orderId
-     * @param Splitting $splitting
-     * @throws Exception
+     * @param \Solinor\PaymentHighway\Model\Splitting $splitting
+     * @throws \Exception
      */
     public function __construct( $request, $amount, $currency, $strong_customer_authentication, $blocking = true, $orderId = null, $splitting = null )
     {

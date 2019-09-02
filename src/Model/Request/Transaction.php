@@ -25,8 +25,8 @@ class Transaction extends \Solinor\PaymentHighway\Model\JsonSerializable
      * @param Card|Token|null $request
      * @param bool $blocking
      * @param string $orderId
-     * @param Splitting $splitting
-     * @throws Exception
+     * @param \Solinor\PaymentHighway\Model\Splitting $splitting
+     * @throws \Exception
      */
     public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null, $splitting = null )
     {

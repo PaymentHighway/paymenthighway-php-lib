@@ -60,7 +60,7 @@ class PaymentApiTest extends TestBase
      */
     public function paymentApiExists()
     {
-        $api = new PaymentApi('https://v1-hub-psd2.sph-test-solinor.com/',  'testKey',  'testSecret',  'test',  'test_merchantId');
+        $api = new PaymentApi('https://v1-hub-staging.sph-test-solinor.com/',  'testKey',  'testSecret',  'test',  'test_merchantId');
 
         $this->assertInstanceOf('Solinor\PaymentHighway\PaymentApi',$api);
 

@@ -2,6 +2,25 @@
 
 use Solinor\PaymentHighway\Model\Card;
 use Solinor\PaymentHighway\Model\Request\Transaction;
+use Solinor\PaymentHighway\Model\Request\CustomerInitiatedTransaction;
+use Solinor\PaymentHighway\Model\Sca\StrongCustomerAuthentication;
+use Solinor\PaymentHighway\Model\Sca\ReturnUrls;
+use Solinor\PaymentHighway\Model\Sca\CustomerAccount;
+use Solinor\PaymentHighway\Model\Sca\AccountAgeIndicator;
+use Solinor\PaymentHighway\Model\Sca\AccountInformationChangeIndicator;
+use Solinor\PaymentHighway\Model\Sca\AccountPasswordChangeIndicator;
+use Solinor\PaymentHighway\Model\Sca\ShippingAddressFirstUsedIndicator;
+use Solinor\PaymentHighway\Model\Sca\SuspiciousActivityIndicator;
+use Solinor\PaymentHighway\Model\Sca\CustomerDetails;
+use Solinor\PaymentHighway\Model\Sca\PhoneNumber;
+use Solinor\PaymentHighway\Model\Sca\Purchase;
+use Solinor\PaymentHighway\Model\Sca\ShippingIndicator;
+use Solinor\PaymentHighway\Model\Sca\DeliveryTimeFrame;
+use Solinor\PaymentHighway\Model\Sca\ReorderItemsIndicator;
+use Solinor\PaymentHighway\Model\Sca\PreOrderPurchaseIndicator;
+use Solinor\PaymentHighway\Model\Sca\ShippingNameIndicator;
+use Solinor\PaymentHighway\Model\Sca\Address;
+use Solinor\PaymentHighway\Model\Sca\ChallengeWindowSize;
 use Solinor\PaymentHighway\Model\Splitting;
 use Solinor\PaymentHighway\PaymentApi;
 use Solinor\PaymentHighway\Tests\TestBase;
@@ -14,6 +33,12 @@ class PaymentApiTest extends TestBase
     const ValidPan = '4153013999700024';
     const ValidCvc = '024';
     const ValidType = 'Visa';
+
+    const SoftDeclineExpiryMonth = '11';
+    const SoftDeclineExpiryYear = '2023';
+    const SoftDeclinePan = '4153013999701162';
+    const SoftDeclineCvc = '162';
+    const SoftDeclineType = 'Visa';
 
     const InvalidExpiryMonth = '10';
     const InvalidExpiryYear = '2014';
@@ -177,6 +202,92 @@ class PaymentApiTest extends TestBase
     }
 
     /**
+     * @depends      paymentApiExists
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     * @return string transactionId
+     */
+    public function chargeMerchantInitiatedTransactionSuccess(PaymentApi $api)
+    {
+        $transactionId = $api->initTransaction()->body->id;
+
+        $card = $this->getValidCardTransactionRequest();
+
+        $response = $api->chargeMerchantInitiatedTransaction( $transactionId, $card)->body;
+
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
+        return $transactionId;
+    }
+
+    /**
+     * @depends      paymentApiExists
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     * @return string transactionId
+     */
+    public function chargeCustomerInitiatedTransactionSuccess(PaymentApi $api)
+    {
+        $transactionId = $api->initTransaction()->body->id;
+
+        $card = $this->getValidCustomerInitiatedTransactionRequest();
+
+        $response = $api->chargeCustomerInitiatedTransaction( $transactionId, $card)->body;
+
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
+        return $transactionId;
+    }
+
+    /**
+     * @depends      paymentApiExists
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     * @return string transactionId
+     */
+    public function chargeCustomerInitiatedTransactionWithFullScaSuccess(PaymentApi $api)
+    {
+        $transactionId = $api->initTransaction()->body->id;
+
+        $strongCustomerAuthentication = $this->getFullStrongCustomerAuthentication();
+
+        $card = $this->getValidCustomerInitiatedTransactionRequest($strongCustomerAuthentication);
+
+        $response = $api->chargeCustomerInitiatedTransaction( $transactionId, $card)->body;
+
+        $this->assertEquals('100', $response->result->code);
+        $this->assertEquals('OK', $response->result->message);
+
+        return $transactionId;
+    }
+
+    /**
+     * @depends      paymentApiExists
+     * @test
+     * @param PaymentApi $api
+     * @param string $transactionId
+     * @return string transactionId
+     */
+    public function chargeCustomerInitiatedTransactionSoftDecline(PaymentApi $api)
+    {
+        $transactionId = $api->initTransaction()->body->id;
+
+        $card = $this->getSoftDeclineCustomerInitiatedTransactionRequest();
+
+        $response = $api->chargeCustomerInitiatedTransaction( $transactionId, $card)->body;
+
+        $this->assertEquals('400', $response->result->code);
+        $this->assertNotNull($response->three_d_secure_url);
+
+        return $transactionId;
+    }
+
+    /**
      * @test
      * @depends paymentApiExists
      */
@@ -239,6 +350,135 @@ class PaymentApiTest extends TestBase
             true,
             self::$orderId,
             $splitting
+        );
+    }
+
+    /**
+     * @param Splitting $splitting
+     * @return CustomerInitiatedTransaction
+     */
+    private function getValidCustomerInitiatedTransactionRequest($strongCustomerAuthentication = null)
+    {
+        if(is_null($strongCustomerAuthentication)) {
+            $strongCustomerAuthentication = new StrongCustomerAuthentication(
+                new ReturnUrls(
+                    "https://example.com/success",
+                    "https://example.com/cancel",
+                    "https://example.com/failure"
+                )
+            );
+        }
+
+        return new CustomerInitiatedTransaction(
+            new Card(
+                self::ValidPan,
+                self::ValidExpiryYear,
+                self::ValidExpiryMonth,
+                self::ValidCvc
+            ),
+            99,
+            'EUR',
+            $strongCustomerAuthentication,
+            true,
+            self::$orderId
+        );
+    }
+
+    /**
+     * @param Splitting $splitting
+     * @return CustomerInitiatedTransaction
+     */
+    private function getSoftDeclineCustomerInitiatedTransactionRequest($strongCustomerAuthentication = null)
+    {
+        if(is_null($strongCustomerAuthentication)) {
+            $strongCustomerAuthentication = new StrongCustomerAuthentication(
+                new ReturnUrls(
+                    "https://example.com/success",
+                    "https://example.com/cancel",
+                    "https://example.com/failure"
+                )
+            );
+        }
+
+        return new CustomerInitiatedTransaction(
+            new Card(
+                self::SoftDeclinePan,
+                self::SoftDeclineExpiryYear,
+                self::SoftDeclineExpiryMonth,
+                self::SoftDeclineCvc
+            ),
+            99,
+            'EUR',
+            $strongCustomerAuthentication,
+            true,
+            self::$orderId
+        );
+    }
+
+    private function getFullStrongCustomerAuthentication() {
+        return new StrongCustomerAuthentication(
+            new ReturnUrls(
+                "https://example.com/success",
+                "https://example.com/cancel",
+                "https://example.com/failure",
+                "https://example.com/webhook/success",
+                "https://example.com/webhook/cancel",
+                "https://example.com/webhook/failure",
+                0
+            ),
+            new CustomerDetails(
+                true,
+                "Eric Example",
+                "eric.example@example.com",
+                new PhoneNumber("358", "123456789"),
+                new PhoneNumber("358", "441234566"),
+                new PhoneNumber("358", "441234566")
+            ),
+            new CustomerAccount(
+                AccountAgeIndicator::MoreThan60Days,
+                "2018-07-05",
+                AccountInformationChangeIndicator::MoreThan60Days,
+                "2018-09-11",
+                AccountPasswordChangeIndicator::NoChange,
+                "2018-07-05",
+                7,
+                1,
+                3,
+                8,
+                ShippingAddressFirstUsedIndicator::Between30And60Days,
+                "2019-07-01",
+                SuspiciousActivityIndicator::NoSuspiciousActivity
+            ),
+            new Purchase(
+                ShippingIndicator::ShipToCardholdersAddress,
+                DeliveryTimeFrame::SameDayShipping,
+                "eric.example@example.com",
+                ReorderItemsIndicator::FirstTimeOrdered,
+                PreOrderPurchaseIndicator::MerchandiseAvailable,
+                "2019-08-20",
+                ShippingNameIndicator::AccountNameMatchesShippingName
+            ),
+            new Address(
+                "Helsinki",
+                "246",
+                "Arkadiankatu 1",
+                "",
+                "",
+                "00101",
+                "18"
+            ),
+            new Address(
+                "Helsinki",
+                "246",
+                "Arkadiankatu 1",
+                "",
+                "",
+                "00101",
+                "18"
+            ),
+            ChallengeWindowSize::Window600x400,
+            false,
+            false
         );
     }
 }

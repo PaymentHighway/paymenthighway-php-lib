@@ -13,7 +13,7 @@ add following to composer
 ```json
     "require" : 
     {
-        "solinor/paymenthighwayio" : "1.6.0"
+        "solinor/paymenthighwayio" : "1.7.0"
     }
 ```
 
@@ -205,12 +205,57 @@ $response = $paymentApi->initTransaction();
 ```
 
 ### Example Debit with Token
+NOTE: The `debitTransaction` method will be deprecated starting from Sep 14th 2019 in favor of the new `chargeCustomerInitiatedTransaction` and `chargeMerchantInitiatedTransaction` in order to comply with the EU's PSD2 directive.
+
 ```php
 $token = new \Solinor\PaymentHighway\Model\Token( $tokenId );
 
-$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $amount, $currency, $token );
+$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $token, $amount, $currency );
 
 $response = $paymentApi->debitTransaction( $transactionId, $transaction);
+```
+
+### Charging a card
+
+After the introduction of the European PSD2 directive the electronic payment transactions are categorised in so called customer initiated transactions (CIT) and merchant initiated transactions (MIT). 
+
+Customer initiated transactions are scenarios where the customer takes actively part in the payment process either by providing their card information or selecting a previously stored payment method. Also so-called "one-click" purchases where the transaction uses a previously saved default payment method are CITs.
+
+Merchant initated transactions are transactions which are initated by the merchant without customer's participation. Merchant initated transactions require a prior agreement between the customer and merchant also called the "mandate". Merchant initiated transactions can be used for example in scenarios where the final price is not known at the time of the purchase or the customer is not present when the charge is made.
+
+#### Charging a customer initiated transaction (CIT)
+
+When charging a customer initiated transaction there is always a possibility that the card issuer requires strong customer authentication. In case the issuer requests SCA then the response will contain "soft decline" code 400 and an URL where the customer needs to be redirected to perform authentication. The URLs where the customer will be redirected after completing authentication need to be defined in the [`ReturnUrls`](/src/Model/Sca/ReturnUrls.php) object.
+
+In addition to the return urls the [`StrongCustomerAuthentication`](/src/Model/Sca/StrongCustomerAuthentication.php) object has many optional fields for information about the customer and the transaction. This information is used in transaction risk analysis (TRA) and can increase the likelihood that the transaction is considered low risk so that strong customer authentication is not needed.
+
+```php
+$token = new \Solinor\PaymentHighway\Model\Token( $tokenId );
+
+$strongCustomerAuthentication = new \Solinor\PaymentHighway\Model\Sca\StrongCustomerAuthentication(
+	new \Solinor\PaymentHighway\Model\Sca\ReturnUrls(
+		"https://example.com/success", // URL the user is redirected after succesful 3D-Secure authentication if strong customer authentication is required
+		"https://example.com/cancel", // URL the user is redirected after cancelled 3D-Secure authentication if strong customer authentication is required
+		"https://example.com/failure" // URL the user is redirected after failed 3D-Secure authentication if strong customer authentication is required
+	)
+	// Optinally other information about the customer and purchase to help in transaction risk analysis (TRA)
+);
+
+$transaction = new \Solinor\PaymentHighway\Model\Request\CustomerInitiatedTransaction( $token, $amount, $currency, $strongCustomerAuthentication );
+
+$response = $paymentApi->chargeCustomerInitiatedTransaction( $transactionId, $transaction);
+```
+
+#### Charging a merchant initiated transaction (MIT)
+
+When charging the customer's card in context where the customer is not actively participating in the transaction you should use the `chargeMerchantInitiatedTransaction` method. The MIT transactions are exempt from the strong customer authentication requirements of PSD2 so the request cannot be answered with "soft-decline" response (code 400) unlike customer initated transactions.
+
+```php
+$token = new \Solinor\PaymentHighway\Model\Token( $tokenId );
+
+$transaction = new \Solinor\PaymentHighway\Model\Request\Transaction( $token, $amount, $currency );
+
+$response = $paymentApi->chargeMerchantInitiatedTransaction( $transactionId, $transaction);
 ```
 
 ### Example Revert

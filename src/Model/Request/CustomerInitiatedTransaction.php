@@ -4,11 +4,11 @@ use Solinor\PaymentHighway\Model\Token;
 use Solinor\PaymentHighway\Model\Card;
 
 /**
- * Class Transaction
+ * Class CustomerInitiatedTransaction
  * @package Solinor\PaymentHighway\Model\Request
  */
 
-class Transaction extends \Solinor\PaymentHighway\Model\JsonSerializable
+class CustomerInitiatedTransaction extends \Solinor\PaymentHighway\Model\JsonSerializable
 {
     public $amount = null;
     public $currency = null;
@@ -19,22 +19,26 @@ class Transaction extends \Solinor\PaymentHighway\Model\JsonSerializable
     public $card = null;
     public $splitting = null;
 
+    public $strong_customer_authentication = null;
+
     /**
+     * @param Card|Token|null $request
      * @param int $amount
      * @param string $currency
-     * @param Card|Token|null $request
+     * @param \Solinor\PaymentHighway\Model\Sca\StrongCustomerAuthentication $strong_customer_authentication
      * @param bool $blocking
      * @param string $orderId
      * @param \Solinor\PaymentHighway\Model\Splitting $splitting
      * @throws \Exception
      */
-    public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null, $splitting = null )
+    public function __construct( $request, $amount, $currency, $strong_customer_authentication, $blocking = true, $orderId = null, $splitting = null )
     {
         $this->amount = $amount;
         $this->currency = $currency;
         $this->order = $orderId;
         $this->blocking = $blocking;
         $this->splitting = $splitting;
+        $this->strong_customer_authentication = $strong_customer_authentication;
 
         $this->setRequestByType($request);
     }

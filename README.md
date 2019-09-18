@@ -13,7 +13,7 @@ add following to composer
 ```json
     "require" : 
     {
-        "solinor/paymenthighwayio" : "1.7.0@RC"
+        "solinor/paymenthighwayio" : "1.7.0"
     }
 ```
 

@@ -21,6 +21,8 @@ class CustomerInitiatedTransaction extends \Solinor\PaymentHighway\Model\JsonSer
 
     public $strong_customer_authentication = null;
 
+    public $commit = null;
+
     /**
      * @param Card|Token|null $request
      * @param int $amount
@@ -29,9 +31,10 @@ class CustomerInitiatedTransaction extends \Solinor\PaymentHighway\Model\JsonSer
      * @param bool $blocking
      * @param string $orderId
      * @param \Solinor\PaymentHighway\Model\Splitting $splitting
+     * @param bool $commit Whether or not automatically commit the payment. Default true.
      * @throws \Exception
      */
-    public function __construct( $request, $amount, $currency, $strong_customer_authentication, $blocking = true, $orderId = null, $splitting = null )
+    public function __construct( $request, $amount, $currency, $strong_customer_authentication, $blocking = true, $orderId = null, $splitting = null, $commit = true)
     {
         $this->amount = $amount;
         $this->currency = $currency;
@@ -39,6 +42,7 @@ class CustomerInitiatedTransaction extends \Solinor\PaymentHighway\Model\JsonSer
         $this->blocking = $blocking;
         $this->splitting = $splitting;
         $this->strong_customer_authentication = $strong_customer_authentication;
+        $this->commit = $commit;
 
         $this->setRequestByType($request);
     }

@@ -18,6 +18,7 @@ class Transaction extends \Solinor\PaymentHighway\Model\JsonSerializable
     public $token = null;
     public $card = null;
     public $splitting = null;
+    public $commit = null;
 
     /**
      * @param int $amount
@@ -26,15 +27,17 @@ class Transaction extends \Solinor\PaymentHighway\Model\JsonSerializable
      * @param bool $blocking
      * @param string $orderId
      * @param \Solinor\PaymentHighway\Model\Splitting $splitting
+     * @param bool $commit Whether or not automatically commit the payment. Default true.
      * @throws \Exception
      */
-    public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null, $splitting = null )
+    public function __construct( $request, $amount, $currency, $blocking = true, $orderId = null, $splitting = null, $commit = null)
     {
         $this->amount = $amount;
         $this->currency = $currency;
         $this->order = $orderId;
         $this->blocking = $blocking;
         $this->splitting = $splitting;
+        $this->commit = $commit;
 
         $this->setRequestByType($request);
     }

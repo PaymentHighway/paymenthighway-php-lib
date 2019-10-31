@@ -380,7 +380,9 @@ class PaymentApiTest extends TestBase
             'EUR',
             $strongCustomerAuthentication,
             true,
-            self::$orderId
+            self::$orderId,
+            null,
+            true
         );
     }
 

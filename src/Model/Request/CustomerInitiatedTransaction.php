@@ -23,6 +23,8 @@ class CustomerInitiatedTransaction extends \Solinor\PaymentHighway\Model\JsonSer
 
     public $commit = null;
 
+    public $reference_number = null;
+
     /**
      * @param Card|Token|null $request
      * @param int $amount
@@ -32,9 +34,10 @@ class CustomerInitiatedTransaction extends \Solinor\PaymentHighway\Model\JsonSer
      * @param string $orderId
      * @param \Solinor\PaymentHighway\Model\Splitting $splitting
      * @param bool $commit Whether or not automatically commit the payment. Default true.
+     * @param string $referenceNumber Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
      * @throws \Exception
      */
-    public function __construct( $request, $amount, $currency, $strong_customer_authentication, $blocking = true, $orderId = null, $splitting = null, $commit = true)
+    public function __construct( $request, $amount, $currency, $strong_customer_authentication, $blocking = true, $orderId = null, $splitting = null, $commit = true, $referenceNumber = null)
     {
         $this->amount = $amount;
         $this->currency = $currency;
@@ -43,6 +46,7 @@ class CustomerInitiatedTransaction extends \Solinor\PaymentHighway\Model\JsonSer
         $this->splitting = $splitting;
         $this->strong_customer_authentication = $strong_customer_authentication;
         $this->commit = $commit;
+        $this->reference_number = $referenceNumber;
 
         $this->setRequestByType($request);
     }

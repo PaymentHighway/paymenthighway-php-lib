@@ -45,6 +45,8 @@ class PaymentApiTest extends TestBase
     const InvalidPan = '415301399900024';
     const InvalidCvc = '022';
 
+    const TestReferenceNumber = "1313";
+
     protected static $orderId;
 
     /**
@@ -98,7 +100,7 @@ class PaymentApiTest extends TestBase
     public function debitTransactionSuccess(PaymentApi $api, $transactionId )
     {
 
-        $card = $this->getValidCardTransactionRequest();
+        $card = $this->getValidCardTransactionRequest(null, self::TestReferenceNumber);
 
         $response = $api->debitTransaction( $transactionId, $card)->body;
 
@@ -157,6 +159,7 @@ class PaymentApiTest extends TestBase
         $response = $api->statusTransaction($transactionId)->body;
 
         $this->assertEquals('4000', $response->transaction->status->code);
+        $this->assertEquals(self::TestReferenceNumber, $response->transaction->reference_number);
         $this->assertEquals('100', $response->result->code);
         $this->assertEquals('OK', $response->result->message);
     }
@@ -331,7 +334,7 @@ class PaymentApiTest extends TestBase
      * @param Splitting $splitting
      * @return Transaction
      */
-    private function getValidCardTransactionRequest($splitting = null)
+    private function getValidCardTransactionRequest($splitting = null, $referenceNumber = null)
     {
         return new Transaction(
             new Card(
@@ -344,7 +347,9 @@ class PaymentApiTest extends TestBase
             'EUR',
             true,
             self::$orderId,
-            $splitting
+            $splitting,
+            true,
+            $referenceNumber
         );
     }
 

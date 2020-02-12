@@ -152,12 +152,14 @@ class FormBuilder {
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @param bool $showPaymentMethodSelector
+     * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
+     *
      * @return Form
      */
     public function generatePaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
                                               $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                              $webhookDelay = null, $showPaymentMethodSelector = null)
+                                              $webhookDelay = null, $showPaymentMethodSelector = null, $referenceNumber = null)
 
     {
         $commonParameters = $this->createFormParameterArray();
@@ -176,6 +178,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
         if(!is_null($showPaymentMethodSelector))
             $commonParameters[self::$SPH_SHOW_PAYMENT_METHOD_SELECTOR] = $showPaymentMethodSelector;
+        if(!is_null($referenceNumber))
+            $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
 
         $commonParameters = array_merge($commonParameters,
             $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
@@ -209,12 +213,13 @@ class FormBuilder {
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
+     * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
      * @return Form
      */
     public function generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                                         $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
                                                         $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                                        $webhookDelay = null)
+                                                        $webhookDelay = null, $referenceNumber = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -226,6 +231,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
+        if(!is_null($referenceNumber))
+            $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
 
         $commonParameters = array_merge($commonParameters,
             $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
@@ -261,12 +268,13 @@ class FormBuilder {
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
+     * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
      * @return Form
      */
     public function generatePayWithTokenAndCvcParameters( $tokenId, $amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                                           $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
                                                           $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                                          $webhookDelay = null)
+                                                          $webhookDelay = null, $referenceNumber = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -278,6 +286,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
+        if(!is_null($referenceNumber))
+            $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
 
         $commonParameters = array_merge($commonParameters,
             $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
@@ -314,13 +324,14 @@ class FormBuilder {
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
+     * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
      * @return Form
      */
     public function generatePayWithMobilePayParameters($amount, $currency, $orderId, $description,
                                                        $exitIframeOnResult = null, $shopLogoUrl = null, $phoneNumber = null,
                                                        $shopName = null , $subMerchantId = null, $subMerchantName = null,
                                                        $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                                       $webhookDelay = null)
+                                                       $webhookDelay = null, $referenceNumber = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -341,6 +352,9 @@ class FormBuilder {
 
         if(!is_null($subMerchantName))
             $commonParameters[self::$SPH_SUB_MERCHANT_NAME] = $subMerchantName;
+
+        if(!is_null($referenceNumber))
+            $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
 
         $commonParameters = array_merge($commonParameters,
             $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
@@ -377,12 +391,13 @@ class FormBuilder {
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
+     * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
      * @return Form
      */
     public function generateMasterpassParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                                  $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
                                                  $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                                 $webhookDelay = null)
+                                                 $webhookDelay = null, $referenceNumber = null)
     {
         $commonParameters = $this->createFormParameterArray();
 
@@ -398,6 +413,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
+        if(!is_null($referenceNumber))
+            $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
 
         $commonParameters = array_merge($commonParameters,
             $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));

@@ -47,7 +47,7 @@ class FormBuilder {
     static $CVC_AND_TOKEN_URI = "/form/view/pay_with_token_and_cvc";
     static $MOBILE_PAY_URI = "/form/view/mobilepay";
     static $MASTERPASS_PAY_URI = "/form/view/masterpass";
-    static $SIIRTO_PAY_URI = "/form/view/siirto";
+    static $PIVO_PAY_URI = "/form/view/pivo";
 
 
     private $method = 'POST';
@@ -434,53 +434,6 @@ class FormBuilder {
     }
 
     /**
-     * Get parameters for Siirto request.
-     *
-     * @param string $amount                The amount to pay in euro cents. Siirto supports only euros.
-     * @param string $orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
-     * @param string $description           Description of the payment shown in the form.
-     * @param string $referenceNumber       Reference number
-     * @param string $phoneNumber           User phone number with country code. Max AN 15. Optional
-     * @param bool $exitIframeOnResult
-     * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
-     * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
-     * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
-     * @param string $webhookDelay          Delay for webhook in seconds. Between 0-900
-     * @return Form
-     */
-    public function generateSiirtoParameters($amount, $orderId, $description, $referenceNumber, $phoneNumber = null,
-                                             $exitIframeOnResult = null, $webhookSuccessUrl = null, $webhookFailureUrl = null,
-                                             $webhookCancelUrl = null, $webhookDelay = null)
-    {
-        $commonParameters = $this->createFormParameterArray();
-
-        $commonParameters[self::$SPH_AMOUNT] = $amount;
-        $commonParameters[self::$SPH_CURRENCY] = "EUR";
-        $commonParameters[self::$SPH_ORDER] = $orderId;
-        $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
-
-        if(!is_null($exitIframeOnResult))
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
-        if(!is_null($phoneNumber))
-            $commonParameters[self::$SPH_PHONE_NUMBER] = $phoneNumber;
-
-        $commonParameters = array_merge($commonParameters,
-            $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
-
-        ksort($commonParameters, SORT_DESC);
-
-        $commonParameters = $this->booleans2Text($commonParameters);
-
-        $signature = $this->createSecureSign(self::$SIIRTO_PAY_URI, $commonParameters);
-
-        $commonParameters[self::$DESCRIPTION] = $description;
-        $commonParameters[self::$LANGUAGE] = $this->language;
-        $commonParameters[self::$SIGNATURE] = $signature;
-
-        return new Form($this->method, $this->baseUrl, self::$SIIRTO_PAY_URI, $commonParameters);
-    }
-
-    /**
      * Get parameters for Pivo request.
      *
      * @param string $amount                The amount to pay in euro cents. Pivo supports only euros.
@@ -521,13 +474,13 @@ class FormBuilder {
 
         $commonParameters = $this->booleans2Text($commonParameters);
 
-        $signature = $this->createSecureSign(self::$SIIRTO_PAY_URI, $commonParameters);
+        $signature = $this->createSecureSign(self::$PIVO_PAY_URI, $commonParameters);
 
         $commonParameters[self::$DESCRIPTION] = $description;
         $commonParameters[self::$LANGUAGE] = $this->language;
         $commonParameters[self::$SIGNATURE] = $signature;
 
-        return new Form($this->method, $this->baseUrl, self::$SIIRTO_PAY_URI, $commonParameters);
+        return new Form($this->method, $this->baseUrl, self::$PIVO_PAY_URI, $commonParameters);
     }
 
     /**

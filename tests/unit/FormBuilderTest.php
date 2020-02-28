@@ -319,28 +319,6 @@ class FormBuilderTest extends TestBase
     }
 
     /**
-     * @dataProvider payWithSiirtoParameters
-     * @test
-     */
-    public function PaymentWithSiirto($method, $signatureKeyId, $signatureSecret, $account, $merchant, $baseUrl, $successUrl,
-                                      $failureUrl, $cancelUrl, $language, $amount, $orderId, $description, $phoneNumber,
-                                      $referenceNumber, $webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay
-    )
-    {
-        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
-            $method, $signatureKeyId, $signatureSecret, $account,
-            $merchant, $baseUrl, $successUrl, $failureUrl,
-            $cancelUrl, $language
-        );
-
-        $form = $formbuilder->generateSiirtoParameters($amount, $orderId, $description, $phoneNumber, $referenceNumber, null,
-            $webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay);
-
-        $this->validateWebhookParameters($form->getParameters());
-        $this->assertCount(19, $form->getParameters());
-    }
-
-    /**
      * @dataProvider payWithPivoParameters
      * @test
      */
@@ -358,6 +336,9 @@ class FormBuilderTest extends TestBase
         $form = $formbuilder->generatePivoParameters($amount, $orderId, $description, $phoneNumber, $reference, $appUrl, null,
             $webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay);
 
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/pivo', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
         $this->validateWebhookParameters($form->getParameters());
         $this->assertCount(20, $form->getParameters());
     }
@@ -506,32 +487,6 @@ class FormBuilderTest extends TestBase
     /**
      * @return array
      */
-    public function payWithSiirtoParametersParameters()
-    {
-        return array(
-            array(
-                'POST',
-                'testKey',
-                'testSecret',
-                'test',
-                'test_merchantId',
-                'https://v1-hub-staging.sph-test-solinor.com',
-                'https://example.com/success',
-                'https://example.com/failure',
-                'https://example.com/cancel',
-                'FI',
-                '100',
-                '123',
-                'testitilaus',
-                '1313',
-                '+3581234567'
-            )
-        );
-    }
-
-    /**
-     * @return array
-     */
     public function payWithPivoParametersParameters()
     {
         return array(
@@ -629,20 +584,6 @@ class FormBuilderTest extends TestBase
         return array(
             array_merge(
                 $paymentCardParameters[0],
-                $this->getWebhookParametersArray()
-            )
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function payWithSiirtoParameters()
-    {
-        $paymentParameters = $this->payWithSiirtoParametersParameters();
-        return array(
-            array_merge(
-                $paymentParameters[0],
                 $this->getWebhookParametersArray()
             )
         );

@@ -145,18 +145,6 @@ class PaymentApi
     }
 
     /**
-     * Used to find out whether or not an Siirto transaction succeeded.
-     * @param string|UUID $transactionId
-     * @return Response
-     * @throws \Httpful\Exception\ConnectionErrorException
-     */
-    public function siirtoTransactionResult($transactionId)
-    {
-        $uri = '/transaction/' . $transactionId . '/siirto/result';
-        return $this->makeRequest(self::$METHOD_GET, $uri);
-    }
-
-    /**
      * Used to find out whether or not an Pivo transaction succeeded.
      * @param string|UUID $transactionId
      * @return Response
@@ -178,19 +166,6 @@ class PaymentApi
     {
         $uri = '/transaction/' . $transactionId . '/revert';
         return $this->makeRequest(self::$METHOD_POST, $uri, array('amount' => $amount));
-    }
-
-    /**
-     * @param string $transactionId
-     * @param string $referenceNumber
-     * @param string $amount
-     * @return \Httpful\Response
-     * @throws \Httpful\Exception\ConnectionErrorException
-     */
-    public function revertSiirtoTransaction($transactionId, $referenceNumber, $amount)
-    {
-        $uri = '/transaction/' . $transactionId . '/siirto/revert';
-        return $this->makeRequest(self::$METHOD_POST, $uri, array('reference_number' => $referenceNumber, 'amount' => $amount));
     }
 
     /**

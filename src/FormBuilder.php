@@ -35,7 +35,6 @@ class FormBuilder {
     static $SPH_WEBHOOK_FAILURE_URL = "sph-webhook-failure-url";
     static $SPH_WEBHOOK_CANCEL_URL = "sph-webhook-cancel-url";
     static $SPH_WEBHOOK_DELAY = "sph-webhook-delay";
-    static $SPH_SHOW_PAYMENT_METHOD_SELECTOR = "sph-show-payment-method-selector";
     static $SPH_PHONE_NUMBER = "sph-phone-number";
     static $SPH_REFERENCE_NUMBER = "sph-reference-number";
     static $SPH_APP_URL = "sph-app-url";
@@ -176,8 +175,6 @@ class FormBuilder {
             $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
         if(!is_null($use3ds))
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
-        if(!is_null($showPaymentMethodSelector))
-            $commonParameters[self::$SPH_SHOW_PAYMENT_METHOD_SELECTOR] = $showPaymentMethodSelector;
         if(!is_null($referenceNumber))
             $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
 

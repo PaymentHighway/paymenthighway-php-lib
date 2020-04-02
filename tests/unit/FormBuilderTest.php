@@ -50,12 +50,12 @@ class FormBuilderTest extends TestBase
         );
 
         $form = $formbuilder->generatePaymentParameters($amount, $currency, $orderId, $description, null,
-            null, null, null, $showPaymentSelector, $referenceNumber);
+            null, null, null, null, null, null, null, $showPaymentSelector, $referenceNumber);
 
         $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
         $this->assertEquals($baseUrl . '/form/view/pay_with_card', $form->getAction());
         $this->assertEquals($method, $form->getMethod());
-        $this->assertCount(15, $form->getParameters());
+        $this->assertCount(14, $form->getParameters());
     }
 
     /**

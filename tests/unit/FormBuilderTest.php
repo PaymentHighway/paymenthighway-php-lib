@@ -158,29 +158,6 @@ class FormBuilderTest extends TestBase
     }
 
     /**
-     * @dataProvider payWithMasterpassParameters
-     * @test
-     */
-    public function paymentWithMasterpass($method, $signatureKeyId, $signatureSecret, $account,
-                                          $merchant, $baseUrl, $successUrl, $failureUrl,
-                                          $cancelUrl, $language, $amount, $currency, $orderId, $description
-    )
-    {
-        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
-            $method, $signatureKeyId, $signatureSecret, $account,
-            $merchant, $baseUrl, $successUrl, $failureUrl,
-            $cancelUrl, $language
-        );
-
-        $form = $formbuilder->generateMasterpassParameters($amount, $currency, $orderId, $description);
-
-        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
-        $this->assertEquals($baseUrl . '/form/view/masterpass', $form->getAction());
-        $this->assertEquals($method, $form->getMethod());
-        $this->assertCount(13, $form->getParameters());
-    }
-
-    /**
      * @dataProvider addPaymentCardWebhookParameters
      * @test
      */
@@ -291,29 +268,6 @@ class FormBuilderTest extends TestBase
 
         $form = $formbuilder->generatePayWithMobilePayParameters($amount, $currency, $orderId, $description, null, null,
             null, null, null, null, $webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay);
-
-        $this->validateWebhookParameters($form->getParameters());
-    }
-
-    /**
-     * @dataProvider payWithMasterpassWebhookParameters
-     * @test
-     */
-    public function PaymentWithMasterpassWithWebhook($method, $signatureKeyId, $signatureSecret, $account,
-                                                     $merchant, $baseUrl, $successUrl, $failureUrl,
-                                                     $cancelUrl, $language, $amount, $currency, $orderId, $description,
-                                                     $skipPaymentSelector,$webhookSuccessUrl, $webhookFailureUrl,
-                                                     $webhookCancelUrl, $webhookDelay
-    )
-    {
-        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
-            $method, $signatureKeyId, $signatureSecret, $account,
-            $merchant, $baseUrl, $successUrl, $failureUrl,
-            $cancelUrl, $language
-        );
-
-        $form = $formbuilder->generateMasterpassParameters($amount, $currency, $orderId, $description, null, null, null, null,
-            $webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay);
 
         $this->validateWebhookParameters($form->getParameters());
     }
@@ -514,14 +468,6 @@ class FormBuilderTest extends TestBase
     /**
      * @return array
      */
-    public function payWithMasterpassParameters()
-    {
-        return $this->payWithCardParameters();
-    }
-
-    /**
-     * @return array
-     */
     public function addPaymentCardWebhookParameters()
     {
         $paymentCardParameters = $this->addPaymentCardParameters();
@@ -567,20 +513,6 @@ class FormBuilderTest extends TestBase
     public function payWithMobilePayWebhookParameters()
     {
         $paymentCardParameters = $this->payWithMobilePayParameters();
-        return array(
-            array_merge(
-                $paymentCardParameters[0],
-                $this->getWebhookParametersArray()
-            )
-        );
-    }
-
-    /**
-     * @return array
-     */
-    public function payWithMasterpassWebhookParameters()
-    {
-        $paymentCardParameters = $this->payWithMasterpassParameters();
         return array(
             array_merge(
                 $paymentCardParameters[0],

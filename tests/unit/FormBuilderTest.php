@@ -184,7 +184,7 @@ class FormBuilderTest extends TestBase
     public function paymentParametersWithWebhook($method, $signatureKeyId, $signatureSecret, $account,
                                                  $merchant, $baseUrl, $successUrl, $failureUrl,
                                                  $cancelUrl, $language, $amount, $currency, $orderId, $description,
-                                                 $skipPaymentSelector,$webhookSuccessUrl, $webhookFailureUrl,
+                                                 $webhookSuccessUrl, $webhookFailureUrl,
                                                  $webhookCancelUrl, $webhookDelay
     )
     {
@@ -207,7 +207,7 @@ class FormBuilderTest extends TestBase
     public function addCardAndPayWithWebhookParameters($method, $signatureKeyId, $signatureSecret, $account,
                                                        $merchant, $baseUrl, $successUrl, $failureUrl,
                                                        $cancelUrl, $language, $amount, $currency, $orderId, $description,
-                                                       $skipPaymentSelector,$webhookSuccessUrl, $webhookFailureUrl,
+                                                       $webhookSuccessUrl, $webhookFailureUrl,
                                                        $webhookCancelUrl, $webhookDelay
     )
     {
@@ -350,8 +350,7 @@ class FormBuilderTest extends TestBase
                 '100',
                 'EUR',
                 '123',
-                'testitilaus',
-                false
+                'testitilaus'
             )
         );
     }

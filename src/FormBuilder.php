@@ -45,7 +45,6 @@ class FormBuilder {
     static $ADD_AND_PAY_URI = "/form/view/add_and_pay_with_card";
     static $CVC_AND_TOKEN_URI = "/form/view/pay_with_token_and_cvc";
     static $MOBILE_PAY_URI = "/form/view/mobilepay";
-    static $MASTERPASS_PAY_URI = "/form/view/masterpass";
     static $PIVO_PAY_URI = "/form/view/pivo";
 
 
@@ -150,7 +149,6 @@ class FormBuilder {
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
-     * @param bool $showPaymentMethodSelector
      * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
      *
      * @return Form
@@ -158,7 +156,7 @@ class FormBuilder {
     public function generatePaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
                                               $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                              $webhookDelay = null, $showPaymentMethodSelector = null, $referenceNumber = null)
+                                              $webhookDelay = null, $referenceNumber = null)
 
     {
         $commonParameters = $this->createFormParameterArray();
@@ -371,63 +369,6 @@ class FormBuilder {
         $commonParameters[self::$SIGNATURE] = $signature;
 
         return new Form($this->method, $this->baseUrl, self::$MOBILE_PAY_URI, $commonParameters);
-    }
-
-    /**
-     * Get parameters for Masterpass payment request.
-     *
-     * @param string $amount
-     * @param string $currency
-     * @param string $orderId
-     * @param string $description
-     * @param bool $skipFormNotifications
-     * @param bool $exitIframeOnResult
-     * @param bool $exitIframeOn3ds
-     * @param bool $use3ds
-     * @param string $webhookSuccessUrl     The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
-     * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
-     * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
-     * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
-     * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
-     * @return Form
-     */
-    public function generateMasterpassParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
-                                                 $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
-                                                 $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                                 $webhookDelay = null, $referenceNumber = null)
-    {
-        $commonParameters = $this->createFormParameterArray();
-
-        $commonParameters[self::$SPH_AMOUNT] = $amount;
-        $commonParameters[self::$SPH_CURRENCY] = $currency;
-        $commonParameters[self::$SPH_ORDER] = $orderId;
-
-        if(!is_null($skipFormNotifications))
-            $commonParameters[self::$SPH_SKIP_FORM_NOTIFICATIONS] = $skipFormNotifications;
-        if(!is_null($exitIframeOnResult))
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_RESULT] = $exitIframeOnResult;
-        if(!is_null($exitIframeOn3ds))
-            $commonParameters[self::$SPH_EXIT_IFRAME_ON_THREE_D_SECURE] = $exitIframeOn3ds;
-        if(!is_null($use3ds))
-            $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
-        if(!is_null($referenceNumber))
-            $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
-
-        $commonParameters = array_merge($commonParameters,
-            $this->createWebhookParametersArray($webhookSuccessUrl, $webhookFailureUrl, $webhookCancelUrl, $webhookDelay));
-
-        ksort($commonParameters, SORT_DESC);
-
-        $commonParameters = $this->booleans2Text($commonParameters);
-
-        $signature = $this->createSecureSign(self::$MASTERPASS_PAY_URI, $commonParameters);
-
-        $commonParameters[self::$DESCRIPTION] = $description;
-        $commonParameters[self::$LANGUAGE] = $this->language;
-        $commonParameters[self::$SIGNATURE] = $signature;
-
-        return new Form($this->method, $this->baseUrl, self::$MASTERPASS_PAY_URI, $commonParameters);
-
     }
 
     /**

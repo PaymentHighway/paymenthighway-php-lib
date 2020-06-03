@@ -152,7 +152,7 @@ class FormBuilder {
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
-     * @param int $splittingMercahntId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
+     * @param int $splittingMerchantId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
      * @param int $splittingAmount          The amount settled to the sub-merchant's account. The rest will be considered as the main merchant's commission. In the smallest currency unit. E.g. 99.99 € = 9999.
      *
      * @return Form
@@ -160,7 +160,7 @@ class FormBuilder {
     public function generatePaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                               $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
                                               $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                              $webhookDelay = null, $referenceNumber = null, $splittingMercahntId = null,
+                                              $webhookDelay = null, $referenceNumber = null, $splittingMerchantId = null,
                                               $splittingAmount = null)
 
     {
@@ -180,8 +180,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
         if(!is_null($referenceNumber))
             $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
-        if(!is_null($splittingMercahntId))
-            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMercahntId;
+        if(!is_null($splittingMerchantId))
+            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMerchantId;
         if(!is_null($splittingAmount))
             $commonParameters[self::$SPH_SPLITTING_AMOUNT] = $splittingAmount;
 
@@ -218,14 +218,14 @@ class FormBuilder {
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
-     * @param int $splittingMercahntId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
+     * @param int $splittingMerchantId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
      * @param int $splittingAmount          The amount settled to the sub-merchant's account. The rest will be considered as the main merchant's commission. In the smallest currency unit. E.g. 99.99 € = 9999.
      * @return Form
      */
     public function generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                                         $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
                                                         $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                                        $webhookDelay = null, $referenceNumber = null, $splittingMercahntId = null,
+                                                        $webhookDelay = null, $referenceNumber = null, $splittingMerchantId = null,
                                                         $splittingAmount = null)
     {
         $commonParameters = $this->createFormParameterArray();
@@ -240,8 +240,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
         if(!is_null($referenceNumber))
             $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
-        if(!is_null($splittingMercahntId))
-            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMercahntId;
+        if(!is_null($splittingMerchantId))
+            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMerchantId;
         if(!is_null($splittingAmount))
             $commonParameters[self::$SPH_SPLITTING_AMOUNT] = $splittingAmount;
 
@@ -280,14 +280,14 @@ class FormBuilder {
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
-     * @param int $splittingMercahntId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
+     * @param int $splittingMerchantId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
      * @param int $splittingAmount          The amount settled to the sub-merchant's account. The rest will be considered as the main merchant's commission. In the smallest currency unit. E.g. 99.99 € = 9999.
      * @return Form
      */
     public function generatePayWithTokenAndCvcParameters( $tokenId, $amount, $currency, $orderId, $description, $skipFormNotifications = null,
                                                           $exitIframeOnResult = null, $exitIframeOn3ds = null, $use3ds = null,
                                                           $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                                          $webhookDelay = null, $referenceNumber = null, $splittingMercahntId = null,
+                                                          $webhookDelay = null, $referenceNumber = null, $splittingMerchantId = null,
                                                           $splittingAmount = null)
     {
         $commonParameters = $this->createFormParameterArray();
@@ -302,8 +302,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_USE_THREE_D_SECURE] = $use3ds;
         if(!is_null($referenceNumber))
             $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
-        if(!is_null($splittingMercahntId))
-            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMercahntId;
+        if(!is_null($splittingMerchantId))
+            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMerchantId;
         if(!is_null($splittingAmount))
             $commonParameters[self::$SPH_SPLITTING_AMOUNT] = $splittingAmount;
 
@@ -343,7 +343,7 @@ class FormBuilder {
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param int $webhookDelay             Delay for webhook in seconds. Between 0-900
      * @param string $referenceNumber       Reference number in RF or Finnish reference format, used when settling the transaction to the merchant account. Only used if one-by-ony transaction settling is configured.
-     * @param int $splittingMercahntId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
+     * @param int $splittingMerchantId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
      * @param int $splittingAmount          The amount settled to the sub-merchant's account. The rest will be considered as the main merchant's commission. In the smallest currency unit. E.g. 99.99 € = 9999.
      * @return Form
      */
@@ -351,7 +351,7 @@ class FormBuilder {
                                                        $exitIframeOnResult = null, $shopLogoUrl = null, $phoneNumber = null,
                                                        $shopName = null , $subMerchantId = null, $subMerchantName = null,
                                                        $webhookSuccessUrl = null, $webhookFailureUrl = null, $webhookCancelUrl = null,
-                                                       $webhookDelay = null, $referenceNumber = null, $splittingMercahntId = null,
+                                                       $webhookDelay = null, $referenceNumber = null, $splittingMerchantId = null,
                                                        $splittingAmount = null)
     {
         $commonParameters = $this->createFormParameterArray();
@@ -376,8 +376,8 @@ class FormBuilder {
 
         if(!is_null($referenceNumber))
             $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
-        if(!is_null($splittingMercahntId))
-            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMercahntId;
+        if(!is_null($splittingMerchantId))
+            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMerchantId;
         if(!is_null($splittingAmount))
             $commonParameters[self::$SPH_SPLITTING_AMOUNT] = $splittingAmount;
 
@@ -415,13 +415,13 @@ class FormBuilder {
      * @param string $webhookFailureUrl     The URL the PH server makes request after a failure such as an authentication or connectivity error.
      * @param string $webhookCancelUrl      The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
      * @param string $webhookDelay          Delay for webhook in seconds. Between 0-900
-     * @param int $splittingMercahntId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
+     * @param int $splittingMerchantId      Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
      * @param int $splittingAmount          The amount settled to the sub-merchant's account. The rest will be considered as the main merchant's commission. In the smallest currency unit. E.g. 99.99 € = 9999.
      * @return Form
      */
     public function generatePivoParameters($amount, $orderId, $description, $referenceNumber = null,  $phoneNumber = null, $appUrl = null,
                                            $exitIframeOnResult = null, $webhookSuccessUrl = null, $webhookFailureUrl = null,
-                                           $webhookCancelUrl = null, $webhookDelay = null, $splittingMercahntId = null,
+                                           $webhookCancelUrl = null, $webhookDelay = null, $splittingMerchantId = null,
                                            $splittingAmount = null)
     {
         $commonParameters = $this->createFormParameterArray();
@@ -438,8 +438,8 @@ class FormBuilder {
             $commonParameters[self::$SPH_REFERENCE_NUMBER] = $referenceNumber;
         if(!is_null($appUrl))
             $commonParameters[self::$SPH_APP_URL] = $appUrl;
-        if(!is_null($splittingMercahntId))
-            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMercahntId;
+        if(!is_null($splittingMerchantId))
+            $commonParameters[self::$SPH_SPLITTING_MERCHANT_ID] = $splittingMerchantId;
         if(!is_null($splittingAmount))
             $commonParameters[self::$SPH_SPLITTING_AMOUNT] = $splittingAmount;
 

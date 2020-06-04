@@ -1,6 +1,8 @@
 # PaymentHighway PHP SDK
 [![][Build Status img]][Build Status]
 
+This library is being *Deprecated*, and won't get new features.
+
 ## Requirements
 
 * PHP 5.6.+

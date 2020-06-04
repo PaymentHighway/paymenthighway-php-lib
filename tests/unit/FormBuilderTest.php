@@ -58,6 +58,34 @@ class FormBuilderTest extends TestBase
     }
 
     /**
+     * @dataProvider payWithCardParametersWithSplitting
+     * @test
+     */
+    public function PaymentParametersWithSplitting($method, $signatureKeyId, $signatureSecret, $account,
+                                      $merchant, $baseUrl, $successUrl, $failureUrl,
+                                      $cancelUrl, $language, $amount, $currency, $orderId, $description,
+                                      $splittingMerchantId, $splittingAmount
+    )
+    {
+        $referenceNumber = "1313";
+
+        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+            $method, $signatureKeyId, $signatureSecret, $account,
+            $merchant, $baseUrl, $successUrl, $failureUrl,
+            $cancelUrl, $language
+        );
+
+        $form = $formbuilder->generatePaymentParameters($amount, $currency, $orderId, $description, null,
+            null, null, null, null, null,
+            null, null, null, $splittingMerchantId, $splittingAmount);
+
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/pay_with_card', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
+        $this->assertCount(15, $form->getParameters());
+    }
+
+    /**
      * @dataProvider payWithCardParameters
      * @test
      */
@@ -78,6 +106,33 @@ class FormBuilderTest extends TestBase
         $this->assertEquals($baseUrl . '/form/view/add_and_pay_with_card', $form->getAction());
         $this->assertEquals($method, $form->getMethod());
         $this->assertCount(13, $form->getParameters());
+    }
+
+    /**
+     * @dataProvider payWithCardParametersWithSplitting
+     * @test
+     */
+    public function addCardAndPayParametersWithSplitting($method, $signatureKeyId, $signatureSecret, $account,
+                                            $merchant, $baseUrl, $successUrl, $failureUrl,
+                                            $cancelUrl, $language, $amount, $currency, $orderId, $description,
+                                            $splittingMerchantId, $splittingAmount
+    )
+    {
+        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+            $method, $signatureKeyId, $signatureSecret, $account,
+            $merchant, $baseUrl, $successUrl, $failureUrl,
+            $cancelUrl, $language
+        );
+
+        $form = $formbuilder->generateAddCardAndPaymentParameters($amount, $currency, $orderId, $description,
+            null, null, null, null, null,
+            null, null, null, null, $splittingMerchantId, $splittingAmount
+        );
+
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/add_and_pay_with_card', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
+        $this->assertCount(15, $form->getParameters());
     }
 
     /**
@@ -106,6 +161,36 @@ class FormBuilderTest extends TestBase
         $this->assertArrayHasKey('sph-token', $form->getParameters());
     }
 
+
+    /**
+     * @dataProvider payWithCvcAndTokenParametersWithSplitting
+     * @test
+     */
+    public function payWithCvcAndTokenWithSplitting($method, $signatureKeyId, $signatureSecret,
+                                       $account, $merchant, $baseUrl,
+                                       $successUrl, $failureUrl, $cancelUrl,
+                                       $language, $tokenId, $amount,
+                                       $currency, $orderId, $description, $splittingMerchantId, $splittingAmount
+    )
+    {
+        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+            $method, $signatureKeyId, $signatureSecret, $account,
+            $merchant, $baseUrl, $successUrl, $failureUrl,
+            $cancelUrl, $language
+        );
+
+        $form = $formbuilder->generatePayWithTokenAndCvcParameters($tokenId, $amount, $currency, $orderId, $description,
+        null, null, null, null, null,
+           null, null, null, null, $splittingMerchantId, $splittingAmount
+        );
+
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/pay_with_token_and_cvc', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
+        $this->assertCount(15, $form->getParameters());
+        $this->assertArrayHasKey('sph-token', $form->getParameters());
+    }
+
     /**
      * @dataProvider payWithMobilePayParameters
      * @test
@@ -129,6 +214,34 @@ class FormBuilderTest extends TestBase
         $this->assertEquals($baseUrl . '/form/view/mobilepay', $form->getAction());
         $this->assertEquals($method, $form->getMethod());
         $this->assertCount(12, $form->getParameters());
+    }
+
+    /**
+     * @dataProvider payWithMobilePayParametersWithSplitting
+     * @test
+     */
+    public function payWithMobilePayWithSplitting($method, $signatureKeyId, $signatureSecret,
+                                     $account, $merchant, $baseUrl,
+                                     $successUrl, $failureUrl, $cancelUrl,
+                                     $language, $amount,
+                                     $currency, $orderId, $description, $splittingMerchantId, $splittingAmount
+    )
+    {
+        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+            $method, $signatureKeyId, $signatureSecret, $account,
+            $merchant, $baseUrl, $successUrl, $failureUrl,
+            $cancelUrl, $language
+        );
+
+        $form = $formbuilder->generatePayWithMobilePayParameters($amount, $currency, $orderId, $description, null,
+            null, null, null, null, null, null,
+            null, null, null, null, $splittingMerchantId, $splittingAmount
+        );
+
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/mobilepay', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
+        $this->assertCount(14, $form->getParameters());
     }
 
     /**
@@ -297,6 +410,30 @@ class FormBuilderTest extends TestBase
     }
 
     /**
+     * @dataProvider payWithPivoParametersWithSplitting
+     * @test
+     */
+    public function PaymentWithPivoWithSplitting($method, $signatureKeyId, $signatureSecret, $account, $merchant, $baseUrl, $successUrl,
+                                    $failureUrl, $cancelUrl, $language, $amount, $orderId, $description, $phoneNumber,
+                                    $reference, $appUrl, $splittingMerchantId, $splittingAmount
+    )
+    {
+        $formbuilder = new \Solinor\PaymentHighway\FormBuilder(
+            $method, $signatureKeyId, $signatureSecret, $account,
+            $merchant, $baseUrl, $successUrl, $failureUrl,
+            $cancelUrl, $language
+        );
+
+        $form = $formbuilder->generatePivoParameters($amount, $orderId, $description, $phoneNumber, $reference, $appUrl, null,
+            null, null, null, null, $splittingMerchantId, $splittingAmount);
+
+        $this->assertInstanceOf('\Solinor\PaymentHighway\Model\Form', $form);
+        $this->assertEquals($baseUrl . '/form/view/pivo', $form->getAction());
+        $this->assertEquals($method, $form->getMethod());
+        $this->assertCount(18, $form->getParameters());
+    }
+
+    /**
      * @param array $parameters
      */
     private function validateWebhookParameters(array $parameters)
@@ -358,6 +495,19 @@ class FormBuilderTest extends TestBase
     /**
      * @return array
      */
+    public function payWithCardParametersWithSplitting()
+    {
+        return array(
+            array_merge(
+                $this->payWithCardParameters()[0],
+                $this->getSplittingParameters()
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
     public function payWithCvcAndTokenParameters()
     {
         return array(
@@ -384,6 +534,19 @@ class FormBuilderTest extends TestBase
     /**
      * @return array
      */
+    public function payWithCvcAndTokenParametersWithSplitting()
+    {
+        return array(
+            array_merge(
+                $this->payWithCvcAndTokenParameters()[0],
+                $this->getSplittingParameters()
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
     public function payWithMobilePayParameters()
     {
         return array(
@@ -402,6 +565,19 @@ class FormBuilderTest extends TestBase
                 'EUR',
                 '123',
                 'testitilaus'
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function payWithMobilePayParametersWithSplitting()
+    {
+        return array(
+            array_merge(
+                $this->payWithMobilePayParameters()[0],
+                $this->getSplittingParameters()
             )
         );
     }
@@ -459,6 +635,19 @@ class FormBuilderTest extends TestBase
                 '1313',
                 '+3581234567',
                 'app://url'
+            )
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function payWithPivoParametersWithSplitting()
+    {
+        return array(
+            array_merge(
+                $this->payWithPivoParametersParameters()[0],
+                $this->getSplittingParameters()
             )
         );
     }
@@ -532,6 +721,7 @@ class FormBuilderTest extends TestBase
             )
         );
     }
+
     private function getWebhookParametersArray()
     {
         return array(
@@ -539,6 +729,14 @@ class FormBuilderTest extends TestBase
             'http://example.com/?q=failure',
             'http://example.com/?q=cancel',
             0
+        );
+    }
+
+    private function getSplittingParameters()
+    {
+        return array(
+            12345,
+            10
         );
     }
 }

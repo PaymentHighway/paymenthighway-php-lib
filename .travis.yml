@@ -18,6 +18,8 @@ jobs:
       env: UUID=3
     - php: 7.1
       env: UUID=3
+    - php: 7.2
+      env: UUID=3
   allow_failures:
     - php: nightly
 

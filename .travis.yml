@@ -2,17 +2,27 @@ language: php
 dist: xenial
 
 php:
-  - '5.6'
-  - '7.0'
-  - '7.1'
   - '7.2'
   - '7.3'
   - '7.4'
   - nightly
 
+env:
+  - UUID=4
+
 jobs:
+  include:
+    - php: 5.6
+      env: UUID=3
+    - php: 7.0
+      env: UUID=3
+    - php: 7.1
+      env: UUID=3
   allow_failures:
     - php: nightly
 
-install: composer install
+install:
+  - composer self-update --2
+  - composer update --with ramsey/uuid=${UUID}.*
+  - composer install
 script: composer test
